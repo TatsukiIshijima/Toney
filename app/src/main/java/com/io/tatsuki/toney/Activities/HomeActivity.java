@@ -1,7 +1,9 @@
-package com.io.tatsuki.toney;
+package com.io.tatsuki.toney.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.io.tatsuki.toney.R;
 
 public class HomeActivity extends AppCompatActivity {
 
