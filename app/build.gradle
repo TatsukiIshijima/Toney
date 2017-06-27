@@ -22,6 +22,13 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -31,5 +38,10 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.google.android.exoplayer:exoplayer:r2.4.2'
+    compile 'com.google.android.exoplayer:exoplayer-core:r2.4.2'
+    compile 'com.google.android.exoplayer:exoplayer-dash:r2.4.2'
+    compile 'com.google.android.exoplayer:exoplayer-ui:r2.4.2'
+    compile 'com.github.iammert:MusicPlayerView:e3b937c729'
     testCompile 'junit:junit:4.12'
 }
