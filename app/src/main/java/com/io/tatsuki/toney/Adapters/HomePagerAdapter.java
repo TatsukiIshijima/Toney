@@ -4,6 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.io.tatsuki.toney.Fragments.AlbumFragment;
+import com.io.tatsuki.toney.Fragments.ArtistFragment;
+import com.io.tatsuki.toney.Fragments.SongFragment;
+
 /**
  * ページ切り替え用のPagerAdapter
  */
@@ -18,18 +22,18 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                break;
+                return ArtistFragment.newInstance();
             case 1:
-                break;
+                return AlbumFragment.newInstance();
             case 2:
-                break;
+                return SongFragment.newInstance();
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return 3;
     }
 
     @Override

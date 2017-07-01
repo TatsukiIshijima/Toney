@@ -14,6 +14,11 @@ import com.io.tatsuki.toney.R;
 
 public class AlbumFragment extends Fragment {
 
+    public static AlbumFragment newInstance() {
+        AlbumFragment albumFragment = new AlbumFragment();
+        return albumFragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
