@@ -1,5 +1,6 @@
 package com.io.tatsuki.toney.Adapters;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.io.tatsuki.toney.Fragments.AlbumFragment;
 import com.io.tatsuki.toney.Fragments.ArtistFragment;
 import com.io.tatsuki.toney.Fragments.SongFragment;
+import com.io.tatsuki.toney.R;
 
 /**
  * ページ切り替え用のPagerAdapter
@@ -14,8 +16,11 @@ import com.io.tatsuki.toney.Fragments.SongFragment;
 
 public class HomePagerAdapter extends FragmentPagerAdapter {
 
-    public HomePagerAdapter(FragmentManager fragmentManager) {
+    private Context context;
+
+    public HomePagerAdapter(Context context, FragmentManager fragmentManager) {
         super(fragmentManager);
+        this.context = context;
     }
 
     @Override
@@ -37,7 +42,16 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public CharSequence getPageTitle(int postion) {
-        return "ページ" + (postion + 1);
+    public CharSequence getPageTitle(int position) {
+        switch (position) {
+            case 0:
+                return context.getString(R.string.tab_title_artist);
+            case 1:
+                return context.getString(R.string.tab_title_album);
+            case 2:
+                return context.getString(R.string.tab_title_song);
+            default:
+                return null;
+        }
     }
 }
