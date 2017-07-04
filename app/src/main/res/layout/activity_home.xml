@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="@color/colorPrimary"
-                app:tabIndicatorColor="@color/colorPrimary">
+                app:tabIndicatorColor="@color/colorAccent">
             </android.support.design.widget.TabLayout>
 
         </android.support.design.widget.AppBarLayout>
@@ -45,21 +45,9 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <!-- BottomSheetのLayout -->
-        <!-- toolbarの上になるようにelevationの設定 -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/bottom_sheet_behavior"
-            android:background="@android:color/white"
-            android:elevation="16dp"
-            app:behavior_peekHeight="60dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BottomSheet"
-                android:textSize="30sp"/>
-        </RelativeLayout>
+        <include
+            android:id="@+id/bottom_sheet_layout"
+            layout="@layout/bottom_sheet_layout"/>
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>
