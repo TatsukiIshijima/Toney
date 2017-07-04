@@ -1,9 +1,13 @@
 package com.io.tatsuki.toney.Activities;
 
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.R;
@@ -36,5 +40,24 @@ public class HomeActivity extends AppCompatActivity {
         binding.activityHomeViewpager.setAdapter(homePagerAdapter);
         // Tab
         binding.activityHomeTabLayout.setupWithViewPager(binding.activityHomeViewpager);
+        // NavigationDrawer
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
+                                                                 binding.activityHomeDrawerLayout,
+                                                                 binding.activityHomeToolbar,
+                                                                 R.string.app_name,
+                                                                 R.string.app_name);
+        binding.activityHomeDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        binding.activityHomeNavigation.setNavigationItemSelectedListener(selectedListener);
     }
+
+    /**
+     * メニュー項目分岐
+     */
+    private NavigationView.OnNavigationItemSelectedListener selectedListener = new NavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            return false;
+        }
+    };
 }

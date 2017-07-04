@@ -1,54 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
         <variable
             name="homeViewModel"
             type="com.io.tatsuki.toney.ViewModels.HomeViewModel"/>
     </data>
-    <android.support.design.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/activity_home_coordinate_layout"
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/activity_home_drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.io.tatsuki.toney.Activities.HomeActivity">
+        android:clickable="true"
+        android:focusableInTouchMode="true">
 
-        <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/activity_home_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:layout_scrollFlags="scroll|enterAlways">
-            </android.support.v7.widget.Toolbar>
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/activity_home_tab_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="@color/colorPrimary"
-                app:tabIndicatorColor="@color/colorAccent">
-            </android.support.design.widget.TabLayout>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/activity_home_viewpager"
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/activity_home_coordinate_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            tools:context="com.io.tatsuki.toney.Activities.HomeActivity">
 
-        <!-- BottomSheetのLayout -->
-        <include
-            android:id="@+id/bottom_sheet_layout"
-            layout="@layout/bottom_sheet_layout"/>
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.AppBarOverlay">
 
-    </android.support.design.widget.CoordinatorLayout>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_home_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:popupTheme="@style/AppTheme.PopupOverlay"
+                    app:layout_scrollFlags="scroll|enterAlways">
+                </android.support.v7.widget.Toolbar>
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/activity_home_tab_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorPrimary"
+                    app:tabIndicatorColor="@color/colorAccent">
+                </android.support.design.widget.TabLayout>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/activity_home_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <!-- BottomSheet Layout -->
+            <include
+                android:id="@+id/bottom_sheet_layout"
+                layout="@layout/bottom_sheet_layout"/>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <!-- Menu Layout (Navigation)-->
+        <android.support.design.widget.NavigationView
+            android:id="@+id/activity_home_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@android:color/white"
+            app:headerLayout="@layout/navigation_drawer_header"
+            app:menu="@menu/menu">
+        </android.support.design.widget.NavigationView>
+
+    </android.support.v4.widget.DrawerLayout>
+
 </layout>
 
