@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Toney</string>
+    <string name="tab_title_song">Song</string>
+    <string name="tab_title_artist">ARTIST</string>
+    <string name="tab_title_album">ALBUM</string>
 </resources>

@@ -10,14 +10,18 @@ Android Studio
 ##################
 
 ### Directory
-* Activities
-* Adapters
-* Fragments
-* Models
-* Repositories
-* Services
-* ViewModels
-* Views
+```
+|---Projects[Toney]
+       |---Activities
+       |---Adapters
+       |---Fragments
+       |---Models
+       |---Repositories
+       |---Services
+       |---Utils
+       |---ViewModels
+       |---Views
+```
 
 ### Library
 | Name | Version | Link |
