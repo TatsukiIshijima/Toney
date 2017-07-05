@@ -14,6 +14,8 @@ import com.io.tatsuki.toney.R;
 
 public class AlbumFragment extends Fragment {
 
+    private static final String TAG = AlbumFragment.class.getSimpleName();
+
     public static AlbumFragment newInstance() {
         AlbumFragment albumFragment = new AlbumFragment();
         return albumFragment;
@@ -26,7 +28,7 @@ public class AlbumFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstance) {
-        View albumView = inflater.inflate(R.layout.fragment_album, null);
+        View albumView = inflater.inflate(R.layout.fragment_album, viewGroup, false);
         return albumView;
     }
 }

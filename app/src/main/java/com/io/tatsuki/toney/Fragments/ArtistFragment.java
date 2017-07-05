@@ -17,6 +17,8 @@ import com.io.tatsuki.toney.databinding.FragmentArtistBinding;
 
 public class ArtistFragment extends Fragment {
 
+    private static final String TAG = ArtistFragment.class.getSimpleName();
+
     public static ArtistFragment newInstance() {
         ArtistFragment artistFragment = new ArtistFragment();
         return artistFragment;
