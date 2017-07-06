@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
-import com.io.tatsuki.toney.Fragments.AlbumFragment;
+import com.io.tatsuki.toney.Fragments.DummyFragment;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
@@ -31,6 +31,14 @@ public class HomeActivity extends AppCompatActivity {
 
         setViews(binding);
         setBottomSheetBehavior(binding);
+
+        // 画面切り替えテスト
+        DummyFragment dummyFragment = new DummyFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activity_home_frame_layout, dummyFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 
     /**
@@ -97,12 +105,5 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void startAlbumFragment(int id) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(id, AlbumFragment.newInstance());
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 }
