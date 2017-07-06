@@ -9,16 +9,23 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
+import com.io.tatsuki.toney.ClickEvent;
 import com.io.tatsuki.toney.Fragments.DummyFragment;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 public class HomeActivity extends AppCompatActivity {
+
+    private static final String TAG = HomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +38,6 @@ public class HomeActivity extends AppCompatActivity {
 
         setViews(binding);
         setBottomSheetBehavior(binding);
-
-        // 画面切り替えテスト
-        DummyFragment dummyFragment = new DummyFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_home_frame_layout, dummyFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
     }
 
     /**
@@ -105,5 +104,34 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        // イベントの登録
+        EventBus.getDefault().register(this);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        // イベントの解除
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    /**
+     * EventBusによる通知受け取り
+     * @param event
+     */
+    @Subscribe
+    public void onClickEvent(ClickEvent event) {
+        Log.d(TAG, event.getRequestCode());
+        // 画面切り替えテスト
+        DummyFragment dummyFragment = new DummyFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activity_home_frame_layout, dummyFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
