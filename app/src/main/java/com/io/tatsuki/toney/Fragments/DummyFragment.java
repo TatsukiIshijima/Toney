@@ -9,16 +9,16 @@ import android.view.ViewGroup;
 import com.io.tatsuki.toney.R;
 
 /**
- * アルバム Fragment
+ * Created by TatsukiIshijima on 2017/07/06.
  */
 
-public class AlbumFragment extends Fragment {
+public class DummyFragment extends Fragment {
 
-    private static final String TAG = AlbumFragment.class.getSimpleName();
+    private static final String TAG = DummyFragment.class.getSimpleName();
 
-    public static AlbumFragment newInstance() {
-        AlbumFragment albumFragment = new AlbumFragment();
-        return albumFragment;
+    public static DummyFragment newInstance() {
+        DummyFragment dummyFragment = new DummyFragment();
+        return dummyFragment;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class AlbumFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstance) {
-        View albumView = inflater.inflate(R.layout.fragment_album, viewGroup, false);
-        return albumView;
+        View dummyView = inflater.inflate(R.layout.fragment_dummy, viewGroup, false);
+        return dummyView;
     }
 }
