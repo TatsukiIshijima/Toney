@@ -6,15 +6,15 @@ package com.io.tatsuki.toney.Models;
 
 public class Song {
 
-    private long songId;
+    private String songId;
     private String songName;
     private String songUri;
 
-    public long getSongId() {
+    public String getSongId() {
         return songId;
     }
 
-    public void setSongId(long songId) {
+    public void setSongId(String songId) {
         this.songId = songId;
     }
 
