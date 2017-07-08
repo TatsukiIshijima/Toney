@@ -14,7 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
-import com.io.tatsuki.toney.ClickEvent;
+import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Fragments.DummyFragment;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;

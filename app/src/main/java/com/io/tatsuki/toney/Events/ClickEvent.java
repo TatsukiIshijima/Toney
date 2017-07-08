@@ -1,7 +1,7 @@
-package com.io.tatsuki.toney;
+package com.io.tatsuki.toney.Events;
 
 /**
- * Created by TatsukiIshijima on 2017/07/06.
+ * EventBusのよりActivityやFragmentにクリックを通知するためのEvent
  */
 
 public class ClickEvent {

@@ -3,7 +3,7 @@ package com.io.tatsuki.toney.ViewModels;
 import android.util.Log;
 import android.view.View;
 
-import com.io.tatsuki.toney.ClickEvent;
+import com.io.tatsuki.toney.Events.ClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
