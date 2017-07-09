@@ -8,17 +8,17 @@ import java.util.ArrayList;
 
 public class Album {
 
-    private long albumId;
+    private String albumId;
     private String albumKey;
     private String albumName;
     private String albumArtPath;
     private ArrayList<Song> songs;
 
-    public long getAlbumId() {
+    public String getAlbumId() {
         return albumId;
     }
 
-    public void setAlbumId(long albumId) {
+    public void setAlbumId(String albumId) {
         this.albumId = albumId;
     }
 

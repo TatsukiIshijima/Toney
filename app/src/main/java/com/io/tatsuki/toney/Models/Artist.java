@@ -8,16 +8,16 @@ import java.util.ArrayList;
 
 public class Artist {
 
-    private long ArtistId;
+    private String ArtistId;
     private String ArtistKey;
     private String ArtistName;
     private ArrayList<Album> albums;
 
-    public long getArtistId() {
+    public String getArtistId() {
         return ArtistId;
     }
 
-    public void setArtistId(long artistId) {
+    public void setArtistId(String artistId) {
         ArtistId = artistId;
     }
 

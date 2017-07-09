@@ -1,20 +1,23 @@
 package com.io.tatsuki.toney.Models;
 
+import android.net.Uri;
+
 /**
  * Song Model
  */
 
 public class Song {
 
-    private long songId;
+    private String songId;
     private String songName;
-    private String songUri;
+    private Uri songUri;
+    private String songArtPath;
 
-    public long getSongId() {
+    public String getSongId() {
         return songId;
     }
 
-    public void setSongId(long songId) {
+    public void setSongId(String songId) {
         this.songId = songId;
     }
 
@@ -26,11 +29,19 @@ public class Song {
         this.songName = songName;
     }
 
-    public String getSongUri() {
+    public Uri getSongUri() {
         return songUri;
     }
 
-    public void setSongUri(String songUri) {
+    public void setSongUri(Uri songUri) {
         this.songUri = songUri;
+    }
+
+    public String getSongArtPath() {
+        return songArtPath;
+    }
+
+    public void setSongArtPath(String songArtPath) {
+        this.songArtPath = songArtPath;
     }
 }
