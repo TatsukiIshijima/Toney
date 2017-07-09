@@ -141,6 +141,10 @@ public class HomeActivity extends AppCompatActivity {
         transaction.replace(R.id.activity_home_frame_layout, dummyFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        // ローカルアクセステスト
+        localAccess.getSongs(null);         // OK
+        localAccess.getAlbums(null);        // OK
+        localAccess.getArtists();           // OK
     }
 
     /**

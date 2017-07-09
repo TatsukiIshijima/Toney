@@ -34,7 +34,7 @@ public class LocalAccess {
 
     /**
      * 曲リストを取得（IDにより取得する曲リストを切り替え）
-     * @param   albumId     アルバムID
+     * @param   albumId     アルバムID(Albums._ID)
      * @return  songs       曲リスト
      */
     public ArrayList<Song> getSongs(String albumId) {
@@ -48,25 +48,26 @@ public class LocalAccess {
                                               "ARTIST ASC");
         // アルバム内の曲を取得するCursor
         if (albumId != null) {
-            cursor = contentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+            cursor = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                                            null,
-                                           MediaStore.Audio.Albums._ID + "=?",
+                                           MediaStore.Audio.Media.ALBUM_ID + "=?",
                                            new String[] {albumId},
                                            null);
         }
 
-        while (cursor.moveToFirst()) {
-            if (cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) > 5000) {
-                Song song = new Song();
-                song.setSongId(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)));
-                song.setSongName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
-                song.setSongUri(Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, song.getSongId()));
-                song.setSongArtPath(getArtPath(MediaStore.Audio.Media.ALBUM_ID));
-                songs.add(song);
-                Log.d(TAG, song.getSongName());
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                if (cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) > 5000) {
+                    Song song = new Song();
+                    song.setSongId(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)));
+                    song.setSongName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
+                    song.setSongUri(Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, song.getSongId()));
+                    song.setSongArtPath(getArtPath(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID))));
+                    songs.add(song);
+                }
             }
+            cursor.close();
         }
-        cursor.close();
         return songs;
     }
 
@@ -93,17 +94,19 @@ public class LocalAccess {
                                            null);
         }
 
-        while (cursor.moveToFirst()) {
-            Album album = new Album();
-            album.setAlbumId(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ID)));
-            album.setAlbumKey(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY)));
-            album.setAlbumName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)));
-            album.setAlbumArtPath(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART)));
-            album.setSongs(getSongs(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ID))));
-            albums.add(album);
-            Log.d(TAG, album.getAlbumName());
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Album album = new Album();
+                album.setAlbumId(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums._ID)));
+                album.setAlbumKey(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_KEY)));
+                album.setAlbumName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)));
+                album.setAlbumArtPath(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART)));
+                album.setSongs(getSongs(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums._ID))));
+                albums.add(album);
+                Log.d(TAG, "Album:" + album.getAlbumName());
+            }
+            cursor.close();
         }
-        cursor.close();
         return albums;
     }
 
@@ -119,16 +122,18 @@ public class LocalAccess {
                                               null,
                                               null,
                                               "ARTIST ASC");
-        while (cursor.moveToFirst()) {
-            Artist artist = new Artist();
-            artist.setArtistId(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists._ID)));
-            artist.setArtistKey(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST_KEY)));
-            artist.setArtistName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST)));
-            artist.setAlbums(getAlbums(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST))));
-            artists.add(artist);
-            Log.d(TAG, artist.getArtistName());
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Artist artist = new Artist();
+                artist.setArtistId(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists._ID)));
+                artist.setArtistKey(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST_KEY)));
+                artist.setArtistName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST)));
+                artist.setAlbums(getAlbums(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST))));
+                artists.add(artist);
+                Log.d(TAG, "Artist:" + artist.getArtistName());
+            }
+            cursor.close();
         }
-        cursor.close();
         return artists;
     }
 
@@ -137,7 +142,7 @@ public class LocalAccess {
      * @param   albumId         アルバムID
      * @return  albumArtPath    アルバムアートワークパス
      */
-    public String getArtPath(String albumId) {
+    private String getArtPath(String albumId) {
         String albumArtPath = null;
         Cursor cursor = contentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                                               null,
@@ -145,11 +150,11 @@ public class LocalAccess {
                                               new String[] {albumId},
                                               null);
 
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             int albumArtId = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
             albumArtPath = cursor.getString(albumArtId);
+            cursor.close();
         }
-        cursor.close();
         return albumArtPath;
     }
 }
