@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
-import com.io.tatsuki.toney.ViewModels.SongItemViewModel;
+import com.io.tatsuki.toney.ViewModels.SongViewModel;
 import com.io.tatsuki.toney.databinding.ItemSongBinding;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     @Override
     public SongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemSongBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_song, parent, false);
-        binding.setSongItemViewModel(new SongItemViewModel());
+        binding.setSongItemViewModel(new SongViewModel());
         return new SongViewHolder(binding.getRoot(), binding.getSongItemViewModel());
     }
 
@@ -64,9 +64,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
      */
     static class SongViewHolder extends RecyclerView.ViewHolder {
 
-        private SongItemViewModel songItemViewModel;
+        private SongViewModel songItemViewModel;
 
-        public SongViewHolder(View itemView, SongItemViewModel songItemViewModel) {
+        public SongViewHolder(View itemView, SongViewModel songItemViewModel) {
             super(itemView);
             this.songItemViewModel = songItemViewModel;
         }
