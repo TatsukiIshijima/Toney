@@ -7,7 +7,7 @@
     <data>
         <variable
             name="songItemViewModel"
-            type="com.io.tatsuki.toney.ViewModels.SongItemViewModel"/>
+            type="com.io.tatsuki.toney.ViewModels.SongViewModel"/>
     </data>
 
 
