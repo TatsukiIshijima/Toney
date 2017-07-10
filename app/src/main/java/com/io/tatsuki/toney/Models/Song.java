@@ -12,6 +12,7 @@ public class Song {
     private String songName;
     private Uri songUri;
     private String songArtPath;
+    private String songArtist;
 
     public String getSongId() {
         return songId;
@@ -43,5 +44,13 @@ public class Song {
 
     public void setSongArtPath(String songArtPath) {
         this.songArtPath = songArtPath;
+    }
+
+    public String getSongArtist() {
+        return songArtist;
+    }
+
+    public void setSongArtist(String songArtist) {
+        this.songArtist = songArtist;
     }
 }
