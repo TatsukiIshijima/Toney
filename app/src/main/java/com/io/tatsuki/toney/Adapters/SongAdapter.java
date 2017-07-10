@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.ViewModels.SongViewModel;
 import com.io.tatsuki.toney.databinding.ItemSongBinding;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder>{
 
     private Context context;
+    private ItemSongBinding binding;
     private ArrayList<Song> songs;
 
     /**
@@ -33,13 +35,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         this.songs = songs;
     }
 
-    private Song getItemAt(int position) {
-        return songs.get(position);
-    }
-
     @Override
     public SongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ItemSongBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_song, parent, false);
+        binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_song, parent, false);
         binding.setSongItemViewModel(new SongViewModel());
         return new SongViewHolder(binding.getRoot(), binding.getSongItemViewModel());
     }
@@ -47,7 +45,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     @Override
     public void onBindViewHolder(SongViewHolder holder, int position) {
         Song song = getItemAt(position);
+        // 曲データのセット
         holder.loadModel(song);
+        // 画像のセット
+        ImageUtil.setDownloadImage(context, song.getSongArtPath(), binding.itemSongImage);
     }
 
     @Override
@@ -57,6 +58,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         } else {
             return songs.size();
         }
+    }
+
+    private Song getItemAt(int position) {
+        return songs.get(position);
     }
 
     /**

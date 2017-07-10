@@ -35,8 +35,6 @@ public class SongFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstance) {
         FragmentSongBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_song, viewGroup, false);
         View songView = binding.getRoot();
-        SongViewModel songViewModel = new SongViewModel();
-        binding.setSongViewModel(songViewModel);
 
         localAccess = new LocalAccess(getContext());
         SongAdapter songAdapter = new SongAdapter(getContext(), localAccess.getSongs(null));
