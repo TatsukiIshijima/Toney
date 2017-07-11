@@ -38,8 +38,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     @Override
     public SongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_song, parent, false);
-        binding.setSongItemViewModel(new SongViewModel());
-        return new SongViewHolder(binding.getRoot(), binding.getSongItemViewModel());
+        binding.setSongViewModel(new SongViewModel());
+        return new SongViewHolder(binding.getRoot(), binding.getSongViewModel());
     }
 
     @Override
@@ -69,11 +69,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
      */
     static class SongViewHolder extends RecyclerView.ViewHolder {
 
-        private SongViewModel songItemViewModel;
+        private SongViewModel songViewModel;
 
-        public SongViewHolder(View itemView, SongViewModel songItemViewModel) {
+        public SongViewHolder(View itemView, SongViewModel songViewModel) {
             super(itemView);
-            this.songItemViewModel = songItemViewModel;
+            this.songViewModel = songViewModel;
         }
 
         /**
@@ -81,7 +81,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
          * @param song
          */
         public void loadModel(Song song) {
-            songItemViewModel.setSong(song);
+            songViewModel.setSong(song);
         }
     }
 }

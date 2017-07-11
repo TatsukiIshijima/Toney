@@ -6,7 +6,7 @@
 
     <data>
         <variable
-            name="songItemViewModel"
+            name="songViewModel"
             type="com.io.tatsuki.toney.ViewModels.SongViewModel"/>
     </data>
 
@@ -15,7 +15,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:foreground="?attr/selectableItemBackground">
+        android:foreground="?android:attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/item_song_image"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:text="@{songItemViewModel.songName}"
+                android:text="@{songViewModel.songName}"
                 android:textSize="16sp"/>
 
             <TextView
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@{songItemViewModel.songArtist}"
+                android:text="@{songViewModel.songArtist}"
                 android:textSize="14sp"/>
 
         </LinearLayout>

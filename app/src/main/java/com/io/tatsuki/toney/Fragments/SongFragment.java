@@ -3,6 +3,7 @@ package com.io.tatsuki.toney.Fragments;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class SongFragment extends Fragment {
         View songView = binding.getRoot();
 
         localAccess = new LocalAccess(getContext());
+        binding.fragmentSongRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         SongAdapter songAdapter = new SongAdapter(getContext(), localAccess.getSongs(null));
         binding.fragmentSongRecyclerView.setAdapter(songAdapter);
 
