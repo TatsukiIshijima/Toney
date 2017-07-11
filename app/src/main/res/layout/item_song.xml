@@ -29,10 +29,11 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="16dp">
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp">
 
             <TextView
                 android:id="@+id/item_song_name_text"
@@ -40,7 +41,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="@{songViewModel.songName}"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
 
             <TextView
                 android:id="@+id/item_song_artist_text"
@@ -48,7 +51,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@{songViewModel.songArtist}"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
 
         </LinearLayout>
 
