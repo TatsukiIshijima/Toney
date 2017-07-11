@@ -5,7 +5,7 @@ import android.databinding.ObservableField;
 import com.io.tatsuki.toney.Models.Song;
 
 /**
- * SongItem ViewModel
+ * Song ViewModel
  */
 
 public class SongViewModel {

@@ -1,12 +1,17 @@
 package com.io.tatsuki.toney.Fragments;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.io.tatsuki.toney.Adapters.AlbumAdapter;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Repositories.LocalAccess;
+import com.io.tatsuki.toney.databinding.FragmentAlbumBinding;
 
 /**
  * アルバム Fragment
@@ -15,6 +20,8 @@ import com.io.tatsuki.toney.R;
 public class AlbumFragment extends Fragment {
 
     private static final String TAG = AlbumFragment.class.getSimpleName();
+
+    private LocalAccess localAccess;
 
     public static AlbumFragment newInstance() {
         AlbumFragment albumFragment = new AlbumFragment();
@@ -28,7 +35,14 @@ public class AlbumFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstance) {
-        View albumView = inflater.inflate(R.layout.fragment_album, viewGroup, false);
+        FragmentAlbumBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_album, viewGroup, false);
+        View albumView = binding.getRoot();
+
+        localAccess = new LocalAccess(getContext());
+        binding.fragmentAlbumRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        AlbumAdapter albumAdapter = new AlbumAdapter(getContext(), localAccess.getAlbums(null));
+        binding.fragmentAlbumRecyclerView.setAdapter(albumAdapter);
+
         return albumView;
     }
 }
