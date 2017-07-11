@@ -12,6 +12,7 @@ public class Album {
     private String albumKey;
     private String albumName;
     private String albumArtPath;
+    private String albumArtist;
     private ArrayList<Song> songs;
 
     public String getAlbumId() {
@@ -44,6 +45,14 @@ public class Album {
 
     public void setAlbumArtPath(String albumArtPath) {
         this.albumArtPath = albumArtPath;
+    }
+
+    public String getAlbumArtist() {
+        return albumArtist;
+    }
+
+    public void setAlbumArtist(String albumArtist) {
+        this.albumArtist = albumArtist;
     }
 
     public ArrayList<Song> getSongs() {
