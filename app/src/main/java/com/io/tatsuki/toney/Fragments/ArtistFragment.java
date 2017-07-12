@@ -3,11 +3,14 @@ package com.io.tatsuki.toney.Fragments;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.io.tatsuki.toney.Adapters.ArtistAdapter;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Repositories.LocalAccess;
 import com.io.tatsuki.toney.ViewModels.ArtistViewModel;
 import com.io.tatsuki.toney.databinding.FragmentArtistBinding;
 
@@ -18,6 +21,7 @@ import com.io.tatsuki.toney.databinding.FragmentArtistBinding;
 public class ArtistFragment extends Fragment {
 
     private static final String TAG = ArtistFragment.class.getSimpleName();
+    private LocalAccess localAccess;
 
     public static ArtistFragment newInstance() {
         ArtistFragment artistFragment = new ArtistFragment();
@@ -33,8 +37,12 @@ public class ArtistFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstance) {
         FragmentArtistBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_artist, viewGroup, false);
         View artistView = binding.getRoot();
-        ArtistViewModel artistViewModel = new ArtistViewModel();
-        binding.setArtistViewModel(artistViewModel);
+
+        localAccess = new LocalAccess(getContext());
+        binding.fragmentArtistRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        ArtistAdapter artistAdapter = new ArtistAdapter(getContext(), localAccess.getArtists());
+        binding.fragmentArtistRecyclerView.setAdapter(artistAdapter);
+
         return artistView;
     }
 }
