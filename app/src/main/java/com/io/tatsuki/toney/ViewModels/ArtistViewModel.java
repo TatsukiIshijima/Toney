@@ -18,12 +18,14 @@ public class ArtistViewModel {
     private static final String TAG = ArtistViewModel.class.getSimpleName();
 
     public ObservableField<String> artistName = new ObservableField<>();
+    public ObservableField<String> artistAlbums = new ObservableField<>();
 
     public ArtistViewModel() {
     }
 
     public void setArtist(Artist artist) {
         artistName.set(artist.getArtistName());
+        artistAlbums.set(String.valueOf(artist.getAlbums().size()) + " Albums");
     }
 
     public void onClick(View view) {
