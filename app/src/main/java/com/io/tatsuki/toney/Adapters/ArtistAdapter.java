@@ -50,7 +50,11 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
 
     @Override
     public int getItemCount() {
-        return 0;
+        if (artists == null) {
+            return 0;
+        } else {
+            return artists.size();
+        }
     }
 
     private Artist getItemAt(int position) {
