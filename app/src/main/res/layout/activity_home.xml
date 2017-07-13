@@ -61,7 +61,7 @@
 
             <!-- BottomSheet Layout -->
             <include
-                android:id="@+id/bottom_sheet_layout"
+                android:id="@+id/activity_home_bottom_sheet"
                 layout="@layout/bottom_sheet_layout"/>
 
         </android.support.design.widget.CoordinatorLayout>

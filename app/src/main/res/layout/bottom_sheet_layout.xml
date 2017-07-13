@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+    <data>
+        <variable
+            name="homeViewModel"
+            type="com.io.tatsuki.toney.ViewModels.HomeViewModel"/>
+    </data>
     <!-- BottomSheet Layout -->
     <!-- toolbarの上になるようにelevationの設定 -->
-    <RelativeLayout
+    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/bottom_sheet_relative_layout"
+        android:id="@+id/bottom_sheet_layout"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/bottom_sheet_behavior"
         android:background="@android:color/white"
         android:elevation="16dp"
-        app:behavior_peekHeight="60dp">
+        app:behavior_peekHeight="72dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BottomSheet"
-            android:textSize="30sp"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    </RelativeLayout>
+            <!-- 全画面表示-->
+            <include
+                android:id="@+id/fragment_playing"
+                layout="@layout/fragment_playing">
+            </include>
+
+            <!-- 一部分表示 -->
+            <include
+                android:id="@+id/fragment_controller"
+                layout="@layout/fragment_controller">
+            </include>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
 </layout>
