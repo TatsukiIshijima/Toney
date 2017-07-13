@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <data>
-        <variable
-            name="homeViewModel"
-            type="com.io.tatsuki.toney.ViewModels.HomeViewModel"/>
-    </data>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <!-- BottomSheet Layout -->
     <!-- toolbarの上になるようにelevationの設定 -->
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/bottom_sheet_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -20,6 +17,7 @@
         app:behavior_peekHeight="72dp">
 
         <FrameLayout
+            android:id="@+id/bottom_sheet_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
