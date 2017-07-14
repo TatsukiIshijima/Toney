@@ -60,6 +60,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="50dp"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:background="@mipmap/ic_prev_white"
                 android:onClick="@{homeViewModel.onClickPrev}"/>
 
@@ -67,6 +68,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="50dp"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:background="@mipmap/ic_repeat_white"
                 android:onClick="@{homeViewModel.onClickRepeat}"/>
 
@@ -74,12 +76,14 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="50dp"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:background="@mipmap/ic_shuffle_white"
                 android:onClick="@{homeViewModel.onClickShuffle}"/>
 
             <ImageButton
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:background="@mipmap/ic_next_white"
                 android:onClick="@{homeViewModel.onClickNext}"/>
 
