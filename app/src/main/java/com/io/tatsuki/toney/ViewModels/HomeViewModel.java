@@ -26,4 +26,12 @@ public class HomeViewModel {
     public void onClickPrev(View view) {
         Log.d(TAG, "onClickPrev");
     }
+
+    public void onClickRepeat(View view) {
+        Log.d(TAG, "onClickRepeat");
+    }
+
+    public void onClickShuffle(View view) {
+        Log.d(TAG, "onClickShuffle");
+    }
 }

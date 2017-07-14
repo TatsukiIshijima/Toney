@@ -44,6 +44,8 @@ public class HomeActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
         homeViewModel = new HomeViewModel();
         binding.setHomeViewModel(homeViewModel);
+        binding.activityHomeBottomSheet.fragmentPlaying.setHomeViewModel(homeViewModel);
+        binding.activityHomeBottomSheet.fragmentController.setHomeViewModel(homeViewModel);
         setViews(binding);
         setBottomSheetBehavior(binding);
 
