@@ -23,6 +23,9 @@ import java.util.ArrayList;
 public class LocalAccess {
 
     private static final String TAG = LocalAccess.class.getSimpleName();
+    private static final Uri mediaUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+    private static final Uri albumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+    private static final Uri artistUri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
     private Context context;
     private ContentResolver contentResolver;
 
@@ -43,7 +46,6 @@ public class LocalAccess {
     public ArrayList<Song> getSongs(String albumId) {
         ArrayList<Song> songs = new ArrayList<>();
 
-        Uri mediaUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         ContentProviderClient contentProviderClient = contentResolver.acquireContentProviderClient(mediaUri);
 
         Cursor cursor = null;
@@ -94,7 +96,6 @@ public class LocalAccess {
     public ArrayList<Album> getAlbums(String artistName) {
         ArrayList<Album> albums = new ArrayList<>();
 
-        Uri albumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
         ContentProviderClient contentProviderClient = contentResolver.acquireContentProviderClient(albumUri);
 
         Cursor cursor = null;
@@ -143,7 +144,6 @@ public class LocalAccess {
     public ArrayList<Artist> getArtists() {
         ArrayList<Artist> artists = new ArrayList<>();
 
-        Uri artistUri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
         ContentProviderClient contentProviderClient = contentResolver.acquireContentProviderClient(artistUri);
 
         Cursor cursor = null;
@@ -181,15 +181,27 @@ public class LocalAccess {
      */
     private String getArtPath(String albumId) {
         String albumArtPath = null;
-        Cursor cursor = contentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                                              null,
-                                              MediaStore.Audio.Albums._ID + "=?",
-                                              new String[] {albumId},
-                                              null);
+        ContentProviderClient contentProviderClient = contentResolver.acquireContentProviderClient(albumUri);
+        Cursor cursor = null;
+        try {
+            cursor = contentProviderClient.query(albumUri,
+                                                  null,
+                                                  MediaStore.Audio.Albums._ID + "=?",
+                                                  new String[] {albumId},
+                                                  null);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
         if (cursor != null && cursor.moveToFirst()) {
             int albumArtId = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
             albumArtPath = cursor.getString(albumArtId);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                contentProviderClient.close();
+            } else {
+                contentProviderClient.release();
+            }
             cursor.close();
         }
         return albumArtPath;
