@@ -33,15 +33,19 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static final int PERMISSION_READ_EX_STORAGE_CODE = 0;
     private LocalAccess localAccess;
+    private ActivityHomeBinding binding;
+    private HomeViewModel homeViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         checkPermissionExStorage();
-        ActivityHomeBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
-        HomeViewModel homeViewModel = new HomeViewModel();
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
+        homeViewModel = new HomeViewModel();
         binding.setHomeViewModel(homeViewModel);
+        binding.activityHomeBottomSheet.fragmentPlaying.setHomeViewModel(homeViewModel);
+        binding.activityHomeBottomSheet.fragmentController.setHomeViewModel(homeViewModel);
         setViews(binding);
         setBottomSheetBehavior(binding);
 
@@ -86,7 +90,7 @@ public class HomeActivity extends AppCompatActivity {
      * @param binding
      */
     private void setBottomSheetBehavior(final ActivityHomeBinding binding) {
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetLayout.bottomSheetRelativeLayout);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(binding.activityHomeBottomSheet.bottomSheetLayout);
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -97,10 +101,10 @@ public class HomeActivity extends AppCompatActivity {
                     case BottomSheetBehavior.STATE_SETTLING:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        binding.bottomSheetLayout.bottomSheetRelativeLayout.setBackgroundColor(getColor(R.color.colorPrimaryDark));
+                        showPlayingScreen();
                         break;
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        binding.bottomSheetLayout.bottomSheetRelativeLayout.setBackgroundColor(getColor(R.color.colorAccent));
+                        hidePlayingScreen();
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
@@ -112,6 +116,23 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    /**
+     * 再生中画面の表示
+     */
+    private void showPlayingScreen() {
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerLinearLayout.setVisibility(View.INVISIBLE);
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingLinearLayout.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 再生中画面の非表示
+     * コントロール画面を表示
+     */
+    private void hidePlayingScreen() {
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingLinearLayout.setVisibility(View.INVISIBLE);
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerLinearLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
