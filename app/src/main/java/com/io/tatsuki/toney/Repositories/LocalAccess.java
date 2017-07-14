@@ -1,9 +1,12 @@
 package com.io.tatsuki.toney.Repositories;
 
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -40,19 +43,25 @@ public class LocalAccess {
     public ArrayList<Song> getSongs(String albumId) {
         ArrayList<Song> songs = new ArrayList<>();
 
-        // 全ての曲を取得するCursor
-        Cursor cursor = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                                              null,
-                                              null,
-                                              null,
-                                              "ARTIST ASC");
-        // アルバム内の曲を取得するCursor
-        if (albumId != null) {
-            cursor = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                                           null,
-                                           MediaStore.Audio.Media.ALBUM_ID + "=?",
-                                           new String[] {albumId},
-                                           null);
+        Uri mediaUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        ContentProviderClient contentProviderClient = contentResolver.acquireContentProviderClient(mediaUri);
+
+        Cursor cursor = null;
+
+        try {
+            // 全ての曲を取得するCursor
+            cursor = contentProviderClient.query(mediaUri, null, null, null, "ARTIST ASC");
+
+            if (albumId != null) {
+                // アルバム内の曲を取得するCursor
+                cursor = contentProviderClient.query(mediaUri,
+                                                     null,
+                                                     MediaStore.Audio.Media.ALBUM_ID + "=?",
+                                                     new String[] {albumId},
+                                                     null);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
 
         if (cursor != null) {
@@ -68,6 +77,11 @@ public class LocalAccess {
                 }
             }
             cursor.close();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                contentProviderClient.close();
+            } else {
+                contentProviderClient.release();
+            }
         }
         return songs;
     }
@@ -79,20 +93,25 @@ public class LocalAccess {
      */
     public ArrayList<Album> getAlbums(String artistName) {
         ArrayList<Album> albums = new ArrayList<>();
-        // 全てのアルバムを取得するCursor
-        Cursor cursor = contentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                                              null,
-                                              null,
-                                              null,
-                                              "ARTIST ASC");
 
-        // 同一アーティストのアルバムを取得するCursor
-        if (artistName != null) {
-            cursor = contentResolver.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                                           null,
-                                           MediaStore.Audio.Albums.ARTIST + "=?",
-                                           new String[] {artistName},
-                                           null);
+        Uri albumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+        ContentProviderClient contentProviderClient = contentResolver.acquireContentProviderClient(albumUri);
+
+        Cursor cursor = null;
+        try {
+            // 全てのアルバムを取得するCursor
+            cursor = contentProviderClient.query(albumUri, null, null, null, "ARTIST ASC");
+
+            // 同一アーティストのアルバムを取得するCursor
+            if (artistName != null) {
+                cursor = contentProviderClient.query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                                                     null,
+                                                     MediaStore.Audio.Albums.ARTIST + "=?",
+                                                     new String[] {artistName},
+                                                     null);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
 
         if (cursor != null) {
@@ -108,6 +127,11 @@ public class LocalAccess {
                 Log.d(TAG, "Album:" + album.getAlbumName());
             }
             cursor.close();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                contentProviderClient.close();
+            } else {
+                contentProviderClient.release();
+            }
         }
         return albums;
     }
@@ -118,12 +142,18 @@ public class LocalAccess {
      */
     public ArrayList<Artist> getArtists() {
         ArrayList<Artist> artists = new ArrayList<>();
-        // 全てのアーティストを取得するCursor
-        Cursor cursor = contentResolver.query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
-                                              null,
-                                              null,
-                                              null,
-                                              "ARTIST ASC");
+
+        Uri artistUri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
+        ContentProviderClient contentProviderClient = contentResolver.acquireContentProviderClient(artistUri);
+
+        Cursor cursor = null;
+        try {
+            // 全てのアーティストを取得するCursor
+            cursor = contentProviderClient.query(artistUri, null, null, null, "ARTIST ASC");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Artist artist = new Artist();
@@ -135,6 +165,11 @@ public class LocalAccess {
                 Log.d(TAG, "Artist:" + artist.getArtistName());
             }
             cursor.close();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                contentProviderClient.close();
+            } else {
+                contentProviderClient.release();
+            }
         }
         return artists;
     }
