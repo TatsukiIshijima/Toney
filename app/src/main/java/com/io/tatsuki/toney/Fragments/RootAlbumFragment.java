@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.io.tatsuki.toney.R;
 
 /**
- * Created by TatsukiIshijima on 2017/07/15.
+ * ViwePager内での遷移を可能にするためのFragment
  */
 
 public class RootAlbumFragment extends Fragment {
@@ -26,11 +26,8 @@ public class RootAlbumFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstance) {
         View rootView = inflater.inflate(R.layout.fragment_root_album_layout, viewGroup, false);
+        // アルバムリスト画面遷移
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        /*
-		 * When this container fragment is created, we fill it with our first
-		 * "real" fragment
-		 */
         transaction.replace(R.id.root_frame_layout, AlbumFragment.newInstance());
         transaction.commit();
         return rootView;

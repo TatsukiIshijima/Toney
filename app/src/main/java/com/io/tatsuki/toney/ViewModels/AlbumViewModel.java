@@ -31,7 +31,7 @@ public class AlbumViewModel {
 
     public void onClickAlbum(Album album) {
         Log.d(TAG, "onClick : " + album.getAlbumName());
-        // Activityに通知
+        // AlbumFragmentに通知
         EventBus.getDefault().post(new ClickEvent(EventRequestConstants.CLICK_ALBUM, album));
     }
 }
