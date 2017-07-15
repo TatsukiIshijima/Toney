@@ -5,12 +5,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.io.tatsuki.toney.Adapters.AlbumAdapter;
-import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Events.AlbumEvent;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Repositories.LocalAccess;
 import com.io.tatsuki.toney.databinding.FragmentAlbumBinding;
@@ -27,10 +28,17 @@ public class AlbumFragment extends Fragment {
     private static final String TAG = AlbumFragment.class.getSimpleName();
 
     private LocalAccess localAccess;
+    private String artistName;
 
     public static AlbumFragment newInstance() {
         AlbumFragment albumFragment = new AlbumFragment();
         return albumFragment;
+    }
+
+    public AlbumFragment() {}
+
+    public AlbumFragment(String artistName) {
+        this.artistName = artistName;
     }
 
     @Override
@@ -45,7 +53,7 @@ public class AlbumFragment extends Fragment {
 
         localAccess = new LocalAccess(getContext());
         binding.fragmentAlbumRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        AlbumAdapter albumAdapter = new AlbumAdapter(getContext(), localAccess.getAlbums(null));
+        AlbumAdapter albumAdapter = new AlbumAdapter(getContext(), localAccess.getAlbums(artistName));
         binding.fragmentAlbumRecyclerView.setAdapter(albumAdapter);
 
         return albumView;
@@ -66,7 +74,7 @@ public class AlbumFragment extends Fragment {
     }
 
     @Subscribe
-    public void onClickAlbum(ClickEvent event) {
+    public void onClickAlbum(AlbumEvent event) {
         transitionSongFragment(event.getAlbum().getAlbumId());
     }
 
@@ -75,7 +83,8 @@ public class AlbumFragment extends Fragment {
      * @param albumId   アルバムID
      */
     private void transitionSongFragment(String albumId) {
-        SongFragment songFragment = new SongFragment(albumId);
+        Log.d(TAG, "transitionSongFragment : AlbumID : " +  albumId);
+        SongFragment songFragment = SongFragment.newInstance(albumId, null);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.root_album_frame_layout, songFragment);
         transaction.addToBackStack(null);

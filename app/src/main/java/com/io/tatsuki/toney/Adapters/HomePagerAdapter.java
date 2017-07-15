@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.io.tatsuki.toney.Fragments.ArtistFragment;
 import com.io.tatsuki.toney.Fragments.RootAlbumFragment;
+import com.io.tatsuki.toney.Fragments.RootArtistFragment;
 import com.io.tatsuki.toney.Fragments.SongFragment;
 import com.io.tatsuki.toney.R;
 
@@ -27,7 +27,8 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return ArtistFragment.newInstance();
+                // 画面遷移時に重ならないようにRootFragmentを持たせる
+                return new RootArtistFragment();
             case 1:
                 // 画面遷移時に重ならないようにRootFragmentを持たせる
                 return new RootAlbumFragment();

@@ -12,8 +12,6 @@ public class ClickEvent {
 
     private String requestCode;
     private Song song;
-    private Album album;
-    private Artist artist;
 
     public ClickEvent(String requestCode) {
         this.requestCode = requestCode;
@@ -24,29 +22,11 @@ public class ClickEvent {
         this.song = song;
     }
 
-    public ClickEvent(String requestCode, Album album) {
-        this.requestCode = requestCode;
-        this.album = album;
-    }
-
-    public ClickEvent(String requestCode, Artist artist) {
-        this.requestCode = requestCode;
-        this.artist = artist;
-    }
-
     public String getRequestCode() {
         return this.requestCode;
     }
 
     public Song getSong() {
         return this.song;
-    }
-
-    public Album getAlbum() {
-        return this.album;
-    }
-
-    public Artist getArtist() {
-        return this.artist;
     }
 }
