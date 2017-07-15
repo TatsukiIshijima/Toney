@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.io.tatsuki.toney.Adapters.ArtistAdapter;
+import com.io.tatsuki.toney.Events.ArtistEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Repositories.LocalAccess;
@@ -67,7 +68,7 @@ public class ArtistFragment extends Fragment {
     }
 
     @Subscribe
-    public void onClickArtist(ClickEvent event) {
+    public void onClickArtist(ArtistEvent event) {
         Log.d(TAG, "onClickArtist : " + event.getArtist().getArtistId() + " ," + event.getArtist().getArtistName());
         transitionSongFragment(event.getArtist().getArtistId());
     }

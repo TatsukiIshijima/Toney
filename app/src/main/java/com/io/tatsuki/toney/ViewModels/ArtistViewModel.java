@@ -2,11 +2,9 @@ package com.io.tatsuki.toney.ViewModels;
 
 import android.databinding.ObservableField;
 import android.util.Log;
-import android.view.View;
 
-import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Events.ArtistEvent;
 import com.io.tatsuki.toney.Models.Artist;
-import com.io.tatsuki.toney.Utils.EventRequestConstants;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -32,6 +30,6 @@ public class ArtistViewModel {
     public void onClickArtist(Artist artist) {
         Log.d(TAG, "onClick : " + artist.getArtistId());
         // ArtistFragmentに通知
-        EventBus.getDefault().post(new ClickEvent(EventRequestConstants.CLICK_ARTIST, artist));
+        EventBus.getDefault().post(new ArtistEvent(artist));
     }
 }

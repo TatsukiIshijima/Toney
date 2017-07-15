@@ -4,9 +4,7 @@ import android.databinding.ObservableField;
 import android.util.Log;
 
 import com.io.tatsuki.toney.Events.AlbumEvent;
-import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Models.Album;
-import com.io.tatsuki.toney.Utils.EventRequestConstants;
 
 import org.greenrobot.eventbus.EventBus;
 
