@@ -11,7 +11,9 @@ public class Artist {
     private String ArtistId;
     private String ArtistKey;
     private String ArtistName;
+    private int albumNum;
     private ArrayList<Album> albums;
+    private ArrayList<Song> songs;
 
     public String getArtistId() {
         return ArtistId;
@@ -37,11 +39,27 @@ public class Artist {
         ArtistName = artistName;
     }
 
+    public int getAlbumNum() {
+        return albumNum;
+    }
+
+    public void setAlbumNum(int albumNum) {
+        this.albumNum = albumNum;
+    }
+
     public ArrayList<Album> getAlbums() {
         return albums;
     }
 
     public void setAlbums(ArrayList<Album> albums) {
         this.albums = albums;
+    }
+
+    public ArrayList<Song> getSongs() {
+        return songs;
+    }
+
+    public void setSongs(ArrayList<Song> songs) {
+        this.songs = songs;
     }
 }
