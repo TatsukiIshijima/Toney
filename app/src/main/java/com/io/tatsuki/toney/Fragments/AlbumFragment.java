@@ -27,10 +27,17 @@ public class AlbumFragment extends Fragment {
     private static final String TAG = AlbumFragment.class.getSimpleName();
 
     private LocalAccess localAccess;
+    private String artistName;
 
     public static AlbumFragment newInstance() {
         AlbumFragment albumFragment = new AlbumFragment();
         return albumFragment;
+    }
+
+    public AlbumFragment() {}
+
+    public AlbumFragment(String artistName) {
+        this.artistName = artistName;
     }
 
     @Override
@@ -45,7 +52,7 @@ public class AlbumFragment extends Fragment {
 
         localAccess = new LocalAccess(getContext());
         binding.fragmentAlbumRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        AlbumAdapter albumAdapter = new AlbumAdapter(getContext(), localAccess.getAlbums(null));
+        AlbumAdapter albumAdapter = new AlbumAdapter(getContext(), localAccess.getAlbums(artistName));
         binding.fragmentAlbumRecyclerView.setAdapter(albumAdapter);
 
         return albumView;
