@@ -28,7 +28,7 @@ public class RootAlbumFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_root_album_layout, viewGroup, false);
         // アルバムリスト画面遷移
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.root_frame_layout, AlbumFragment.newInstance());
+        transaction.replace(R.id.root_album_frame_layout, AlbumFragment.newInstance());
         transaction.commit();
         return rootView;
     }

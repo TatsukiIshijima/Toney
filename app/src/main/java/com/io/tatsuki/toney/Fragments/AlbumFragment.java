@@ -67,8 +67,15 @@ public class AlbumFragment extends Fragment {
 
     @Subscribe
     public void onClickAlbum(ClickEvent event) {
-        // 曲リストへ画面遷移
-        SongFragment songFragment = new SongFragment(event.getAlbum().getAlbumId());
+        transitionSongFragment(event.getAlbum().getAlbumId());
+    }
+
+    /**
+     * 曲リスト画面遷移
+     * @param albumId   アルバムID
+     */
+    private void transitionSongFragment(String albumId) {
+        SongFragment songFragment = new SongFragment(albumId);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.root_album_frame_layout, songFragment);
         transaction.addToBackStack(null);
