@@ -28,8 +28,8 @@ public class ArtistViewModel {
         artistAlbums.set(String.valueOf(artist.getAlbums().size()) + " Albums");
     }
 
-    public void onClick(View view) {
-        Log.d(TAG, "Click Button");
-        EventBus.getDefault().post(new ClickEvent("test"));
+    public void onClickArtist(Artist artist) {
+        Log.d(TAG, "onClick : " + artist.getArtistName());
+        //EventBus.getDefault().post(new ClickEvent("test"));
     }
 }
