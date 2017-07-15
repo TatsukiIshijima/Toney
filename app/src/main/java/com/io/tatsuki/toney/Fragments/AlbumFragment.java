@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +83,8 @@ public class AlbumFragment extends Fragment {
      * @param albumId   アルバムID
      */
     private void transitionSongFragment(String albumId) {
-        SongFragment songFragment = new SongFragment(albumId);
+        Log.d(TAG, "transitionSongFragment : AlbumID : " +  albumId);
+        SongFragment songFragment = SongFragment.newInstance(albumId, null);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.root_album_frame_layout, songFragment);
         transaction.addToBackStack(null);

@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Models.Artist;
+import com.io.tatsuki.toney.Utils.EventRequestConstants;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,11 +26,12 @@ public class ArtistViewModel {
 
     public void setArtist(Artist artist) {
         artistName.set(artist.getArtistName());
-        artistAlbums.set(String.valueOf(artist.getAlbums().size()) + " Albums");
+        artistAlbums.set(artist.getAlbumNum() + " Albums");
     }
 
     public void onClickArtist(Artist artist) {
-        Log.d(TAG, "onClick : " + artist.getArtistName());
-        //EventBus.getDefault().post(new ClickEvent("test"));
+        Log.d(TAG, "onClick : " + artist.getArtistId());
+        // ArtistFragmentに通知
+        EventBus.getDefault().post(new ClickEvent(EventRequestConstants.CLICK_ARTIST, artist));
     }
 }
