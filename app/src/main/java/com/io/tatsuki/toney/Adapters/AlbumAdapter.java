@@ -49,6 +49,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         holder.loadModel(album);
         // 画像のセット
         ImageUtil.setDownloadImage(context, album.getAlbumArtPath(), binding.itemAlbumImage);
+        // クリックイベントのセット
+        binding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onClickAlbum(album);
+            }
+        });
     }
 
     @Override
@@ -82,6 +89,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
          */
         public void loadModel(Album album) {
             albumViewModel.setAlbum(album);
+        }
+
+        /**
+         * クリックイベント
+         * @param album
+         */
+        public void onClickAlbum(Album album) {
+            albumViewModel.onClickAlbum(album);
         }
     }
 }
