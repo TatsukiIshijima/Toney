@@ -21,10 +21,16 @@ import com.io.tatsuki.toney.databinding.FragmentSongBinding;
 public class SongFragment extends Fragment {
 
     private LocalAccess localAccess;
+    private String albumId;
 
     public static SongFragment newInstance() {
-        SongFragment songFragment = new SongFragment();
-        return songFragment;
+        return new SongFragment();
+    }
+
+    public SongFragment() {}
+
+    public SongFragment(String albumId) {
+        this.albumId = albumId;
     }
 
     @Override
@@ -39,7 +45,7 @@ public class SongFragment extends Fragment {
 
         localAccess = new LocalAccess(getContext());
         binding.fragmentSongRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        SongAdapter songAdapter = new SongAdapter(getContext(), localAccess.getSongs(null));
+        SongAdapter songAdapter = new SongAdapter(getContext(), localAccess.getSongs(albumId));
         binding.fragmentSongRecyclerView.setAdapter(songAdapter);
 
         return songView;
