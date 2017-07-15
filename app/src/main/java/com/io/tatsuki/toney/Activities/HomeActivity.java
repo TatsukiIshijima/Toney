@@ -8,33 +8,22 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
-import com.io.tatsuki.toney.Events.ClickEvent;
-import com.io.tatsuki.toney.Fragments.DummyFragment;
-import com.io.tatsuki.toney.Fragments.SongFragment;
 import com.io.tatsuki.toney.R;
-import com.io.tatsuki.toney.Repositories.LocalAccess;
-import com.io.tatsuki.toney.Utils.EventRequestConstants;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static final int PERMISSION_READ_EX_STORAGE_CODE = 0;
-    private LocalAccess localAccess;
     private ActivityHomeBinding binding;
     private HomeViewModel homeViewModel;
 
@@ -50,8 +39,6 @@ public class HomeActivity extends AppCompatActivity {
         binding.activityHomeBottomSheet.fragmentController.setHomeViewModel(homeViewModel);
         setViews(binding);
         setBottomSheetBehavior(binding);
-
-        localAccess = new LocalAccess(this);
     }
 
     /**
