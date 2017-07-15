@@ -24,11 +24,6 @@ public class ClickEvent {
         this.song = song;
     }
 
-    public ClickEvent(String requestCode, Album album) {
-        this.requestCode = requestCode;
-        this.album = album;
-    }
-
     public ClickEvent(String requestCode, Artist artist) {
         this.requestCode = requestCode;
         this.artist = artist;

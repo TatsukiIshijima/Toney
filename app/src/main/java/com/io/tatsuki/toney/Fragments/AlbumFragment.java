@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.io.tatsuki.toney.Adapters.AlbumAdapter;
-import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Events.AlbumEvent;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Repositories.LocalAccess;
 import com.io.tatsuki.toney.databinding.FragmentAlbumBinding;
@@ -74,7 +74,7 @@ public class AlbumFragment extends Fragment {
     }
 
     @Subscribe
-    public void onClickAlbum(ClickEvent event) {
+    public void onClickAlbum(AlbumEvent event) {
         transitionSongFragment(event.getAlbum().getAlbumId());
     }
 
