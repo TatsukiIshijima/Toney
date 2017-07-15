@@ -20,8 +20,10 @@ import android.view.View;
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Fragments.DummyFragment;
+import com.io.tatsuki.toney.Fragments.SongFragment;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Repositories.LocalAccess;
+import com.io.tatsuki.toney.Utils.EventRequestConstants;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
 
@@ -138,14 +140,14 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         // イベントの登録
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
         super.onResume();
     }
 
     @Override
     protected void onPause() {
         // イベントの解除
-        EventBus.getDefault().unregister(this);
+        //EventBus.getDefault().unregister(this);
         super.onPause();
     }
 
@@ -153,20 +155,12 @@ public class HomeActivity extends AppCompatActivity {
      * EventBusによる通知受け取り
      * @param event
      */
+    /*
     @Subscribe
     public void onClickEvent(ClickEvent event) {
         Log.d(TAG, event.getRequestCode());
-        // 画面切り替えテスト
-        DummyFragment dummyFragment = new DummyFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_home_frame_layout, dummyFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-        // ローカルアクセステスト
-        localAccess.getSongs(null);         // OK
-        localAccess.getAlbums(null);        // OK
-        localAccess.getArtists();           // OK
     }
+    */
 
     /**
      * 外部ストレージアクセスのパーミッションチェック
