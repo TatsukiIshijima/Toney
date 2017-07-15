@@ -49,6 +49,13 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         holder.loadModel(song);
         // 画像のセット
         ImageUtil.setDownloadImage(context, song.getSongArtPath(), binding.itemSongImage);
+        // クリックイベントのセット
+        binding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onClickSong(song);
+            }
+        });
     }
 
     @Override
@@ -82,6 +89,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
          */
         public void loadModel(Song song) {
             songViewModel.setSong(song);
+        }
+
+        /**
+         * クリックイベント
+         * @param song
+         */
+        public void onClickSong(Song song) {
+            songViewModel.onClickSong(song);
         }
     }
 }

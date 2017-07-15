@@ -46,6 +46,13 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
         Artist artist = getItemAt(position);
         //  アーティストデータのセット
         holder.loadModel(artist);
+        // クリックイベントのセット
+        binding.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.onClickArtist(artist);
+            }
+        });
     }
 
     @Override
@@ -77,6 +84,14 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
          */
         public void loadModel(Artist artist) {
             artistViewModel.setArtist(artist);
+        }
+
+        /**
+         * クリックイベント
+         * @param artist
+         */
+        public void onClickArtist(Artist artist) {
+            artistViewModel.onClickArtist(artist);
         }
     }
 }

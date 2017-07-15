@@ -1,6 +1,7 @@
 package com.io.tatsuki.toney.ViewModels;
 
 import android.databinding.ObservableField;
+import android.util.Log;
 
 import com.io.tatsuki.toney.Models.Song;
 
@@ -22,5 +23,11 @@ public class SongViewModel {
     public void setSong(Song song) {
         songName.set(song.getSongName());
         songArtist.set(song.getSongArtist());
+    }
+
+    public void onClickSong(Song song) {
+        Log.d(TAG, "onClick :" + song.getSongName());
+        // Activityに通知
+        //　通知を受けたらBottomSheetに反映
     }
 }
