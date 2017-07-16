@@ -32,14 +32,12 @@ public class AlbumFragment extends Fragment {
 
     public static AlbumFragment newInstance() {
         AlbumFragment albumFragment = new AlbumFragment();
+        Bundle args = new Bundle();
+        albumFragment.setArguments(args);
         return albumFragment;
     }
 
     public AlbumFragment() {}
-
-    public AlbumFragment(String artistName) {
-        this.artistName = artistName;
-    }
 
     @Override
     public void onCreate(Bundle savedInstance) {
