@@ -51,6 +51,7 @@ public class HomeActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         HomePagerAdapter homePagerAdapter = new HomePagerAdapter(this, fragmentManager);
         binding.activityHomeViewpager.setAdapter(homePagerAdapter);
+        binding.activityHomeViewpager.addOnPageChangeListener(homePagerAdapter);
         // Tab
         binding.activityHomeTabLayout.setupWithViewPager(binding.activityHomeViewpager);
         // NavigationDrawer

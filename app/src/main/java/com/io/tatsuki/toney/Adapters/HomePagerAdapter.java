@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import com.io.tatsuki.toney.Fragments.RootAlbumFragment;
 import com.io.tatsuki.toney.Fragments.RootArtistFragment;
@@ -14,8 +16,9 @@ import com.io.tatsuki.toney.R;
  * ページ切り替え用のPagerAdapter
  */
 
-public class HomePagerAdapter extends FragmentPagerAdapter {
+public class HomePagerAdapter extends FragmentPagerAdapter implements ViewPager.OnPageChangeListener{
 
+    private static final String TAG = HomePagerAdapter.class.getSimpleName();
     private Context context;
 
     public HomePagerAdapter(Context context, FragmentManager fragmentManager) {
@@ -55,5 +58,20 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        Log.d(TAG, "onPageScrolled");
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        Log.d(TAG, "onPageSelected");
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        Log.d(TAG, "onPageScrollStateChanged");
     }
 }
