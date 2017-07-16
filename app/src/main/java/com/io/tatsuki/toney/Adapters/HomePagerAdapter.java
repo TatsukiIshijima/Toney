@@ -20,10 +20,12 @@ public class HomePagerAdapter extends FragmentPagerAdapter implements ViewPager.
 
     private static final String TAG = HomePagerAdapter.class.getSimpleName();
     private Context context;
+    private FragmentManager fm;
 
     public HomePagerAdapter(Context context, FragmentManager fragmentManager) {
         super(fragmentManager);
         this.context = context;
+        this.fm = fragmentManager;
     }
 
     @Override
@@ -73,5 +75,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter implements ViewPager.
     @Override
     public void onPageScrollStateChanged(int state) {
         Log.d(TAG, "onPageScrollStateChanged");
+        // Fragmentのスタックを消す
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }
