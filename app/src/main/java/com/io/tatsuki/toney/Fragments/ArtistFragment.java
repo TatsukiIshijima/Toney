@@ -32,6 +32,8 @@ public class ArtistFragment extends Fragment {
 
     public static ArtistFragment newInstance() {
         ArtistFragment artistFragment = new ArtistFragment();
+        Bundle args = new Bundle();
+        artistFragment.setArguments(args);
         return artistFragment;
     }
 

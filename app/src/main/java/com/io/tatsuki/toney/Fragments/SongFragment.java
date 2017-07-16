@@ -50,8 +50,9 @@ public class SongFragment extends Fragment {
         super.onCreate(savedInstance);
         Bundle bundle = getArguments();
         albumId = bundle.getString("albumId", null);
+        artistId = bundle.getString("artistId", null);
         Log.d(TAG, "onCreate : albumId : " + albumId);
-        //artistId = bundle.getString("artistId", null);
+        Log.d(TAG, "onCreate : artistId : " + artistId);
     }
 
     @Override
