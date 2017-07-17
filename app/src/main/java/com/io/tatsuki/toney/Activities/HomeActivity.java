@@ -23,6 +23,7 @@ import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Services.MusicService;
 import com.io.tatsuki.toney.Utils.ServiceConstant;
@@ -141,6 +142,17 @@ public class HomeActivity extends AppCompatActivity {
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerLinearLayout.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * BottomSheetに曲名、アーティスト名を表示
+     * @param song
+     */
+    private void showSongAndArtist(Song song) {
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerSongText.setText(song.getSongName());
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerArtistText.setText(song.getSongArtist());
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingSongText.setText(song.getSongName());
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingArtistText.setText(song.getSongArtist());
+    }
+
     @Override
     protected void onResume() {
         // イベントの登録
@@ -185,6 +197,9 @@ public class HomeActivity extends AppCompatActivity {
                 break;
             case ClickEvent.playCode:
                 musicBound.play();
+                if (event.getSong() != null) {
+                    showSongAndArtist(event.getSong());
+                }
                 break;
             case ClickEvent.nextCode:
                 musicBound.next();
