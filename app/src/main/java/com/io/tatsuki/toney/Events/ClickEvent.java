@@ -10,19 +10,26 @@ import com.io.tatsuki.toney.Models.Song;
 
 public class ClickEvent {
 
-    private String requestCode;
+    // クリックイベントでの分岐に使用するコード
+    public static final int prevCode = 0;
+    public static final int playCode = 1;
+    public static final int nextCode = 2;
+    public static final int repeatCode = 3;
+    public static final int shuffleCode = 4;
+
+    private int requestCode;
     private Song song;
 
-    public ClickEvent(String requestCode) {
+    public ClickEvent(int requestCode) {
         this.requestCode = requestCode;
     }
 
-    public ClickEvent(String requestCode, Song song) {
+    public ClickEvent(int requestCode, Song song) {
         this.requestCode = requestCode;
         this.song = song;
     }
 
-    public String getRequestCode() {
+    public int getRequestCode() {
         return this.requestCode;
     }
 

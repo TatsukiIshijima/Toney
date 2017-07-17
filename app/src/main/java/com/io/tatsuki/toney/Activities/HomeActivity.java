@@ -22,11 +22,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
+import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Services.MusicService;
 import com.io.tatsuki.toney.Utils.ServiceConstant;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -139,7 +143,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         // イベントの登録
-        //EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
         super.onResume();
         // Serviceをbindする
         if (isBound == false) {
@@ -151,7 +155,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         // イベントの解除
-        //EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);
         super.onPause();
         // Serviceをunbindする
         doUnbindService();
@@ -166,12 +170,11 @@ public class HomeActivity extends AppCompatActivity {
      * EventBusによる通知受け取り
      * @param event
      */
-    /*
     @Subscribe
     public void onClickEvent(ClickEvent event) {
-        Log.d(TAG, event.getRequestCode());
+        Log.d(TAG, "onClickEvent : " + event.getRequestCode());
     }
-    */
+
 
     /**
      * 外部ストレージアクセスのパーミッションチェック
