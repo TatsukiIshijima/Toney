@@ -40,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {
     private HomeViewModel homeViewModel;
     private MusicService musicBound;
     private boolean isBound;
+    private boolean isStartService = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,10 +147,15 @@ public class HomeActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
         super.onResume();
         // Serviceをbindする
-        if (isBound == false) {
+        if (!isBound) {
             doBindService();
         }
         // TODO:Serviceが終了していたら再起動
+        // TODO:Test必須
+        if (!isStartService) {
+            Log.d(TAG, "ReStartService");
+            startService();
+        }
     }
 
     @Override
@@ -173,6 +179,23 @@ public class HomeActivity extends AppCompatActivity {
     @Subscribe
     public void onClickEvent(ClickEvent event) {
         Log.d(TAG, "onClickEvent : " + event.getRequestCode());
+        switch (event.getRequestCode()) {
+            case ClickEvent.prevCode:
+                musicBound.prev();
+                break;
+            case ClickEvent.playCode:
+                musicBound.play();
+                break;
+            case ClickEvent.nextCode:
+                musicBound.next();
+                break;
+            case ClickEvent.repeatCode:
+                break;
+            case ClickEvent.shuffleCode:
+                break;
+            default:
+                break;
+        }
     }
 
 
@@ -217,6 +240,7 @@ public class HomeActivity extends AppCompatActivity {
     private void startService() {
         Intent intent = new Intent(this, MusicService.class);
         intent.setAction(ServiceConstant.SERVICE_START);
+        isStartService = true;
         startService(intent);
     }
 

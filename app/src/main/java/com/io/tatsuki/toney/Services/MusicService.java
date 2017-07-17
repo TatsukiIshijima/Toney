@@ -21,6 +21,8 @@ public class MusicService extends Service {
 
     private static final String TAG = MusicService.class.getSimpleName();
     private final IBinder binder = new MusicServiceBinder();
+    private boolean isRepeat = false;
+    private boolean isShuffle = false;
 
     /**
      * Serviceに接続するためのBinder
@@ -72,14 +74,17 @@ public class MusicService extends Service {
         if (intent.getAction().equals(ServiceConstant.MUSIC_PLAY)) {
             // TODO:再生中か停止中かを判断する
             Log.d(TAG, "Music Play or Pause");
+            play();
         }
 
         if (intent.getAction().equals(ServiceConstant.MUSIC_PREV)) {
             Log.d(TAG, "Music Prev");
+            prev();
         }
 
         if (intent.getAction().equals(ServiceConstant.MUSIC_NEXT)) {
             Log.d(TAG, "Music Next");
+            next();
         }
 
         return START_STICKY;
@@ -115,12 +120,11 @@ public class MusicService extends Service {
         return PendingIntent.getService(this, 0, stopIntent, 0);
     }
 
-    // 以下のメソッドはbindServiceで呼び出し
     /**
      * 再生、停止のためのIntent
      * @return
      */
-    public PendingIntent playIntent() {
+    private PendingIntent playIntent() {
         Intent playIntent = new Intent(this, MusicService.class);
         playIntent.setAction(ServiceConstant.MUSIC_PLAY);
         return PendingIntent.getService(this, 0, playIntent, 0);
@@ -130,7 +134,7 @@ public class MusicService extends Service {
      * 前の曲に戻るためのIntent
      * @return
      */
-    public PendingIntent prevIntent() {
+    private PendingIntent prevIntent() {
         Intent prevIntent = new Intent(this, MusicService.class);
         prevIntent.setAction(ServiceConstant.MUSIC_PREV);
         return PendingIntent.getService(this, 0, prevIntent, 0);
@@ -140,9 +144,44 @@ public class MusicService extends Service {
      * 次の曲に進むためのIntent
      * @return
      */
-    public PendingIntent nextIntent() {
+    private PendingIntent nextIntent() {
         Intent nextIntent = new Intent(this, MusicService.class);
         nextIntent.setAction(ServiceConstant.MUSIC_NEXT);
         return PendingIntent.getService(this, 0, nextIntent, 0);
+    }
+
+    /**
+     * 前の曲再生
+     */
+    public void prev() {
+        Log.d(TAG, "prev");
+    }
+
+    /**
+     * 再生・停止
+     */
+    public void play() {
+        Log.d(TAG, "play");
+    }
+
+    /**
+     * 次の曲再生
+     */
+    public void next() {
+        Log.d(TAG, "next");
+    }
+
+    /**
+     * シャッフル設定
+     */
+    public void setShuffle() {
+        Log.d(TAG, "setShuffle");
+    }
+
+    /**
+     * リピート設定
+     */
+    public void setRepeat() {
+        Log.d(TAG, "setRepeat");
     }
 }
