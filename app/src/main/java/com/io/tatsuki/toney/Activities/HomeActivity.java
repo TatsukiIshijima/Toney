@@ -1,6 +1,7 @@
 package com.io.tatsuki.toney.Activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Services.MusicService;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
 
@@ -39,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         binding.activityHomeBottomSheet.fragmentController.setHomeViewModel(homeViewModel);
         setViews(binding);
         setBottomSheetBehavior(binding);
+        startService();
     }
 
     /**
@@ -183,5 +186,13 @@ public class HomeActivity extends AppCompatActivity {
             default:
                 break;
         }
+    }
+
+    /**
+     * Serviceの開始
+     */
+    private void startService() {
+        Intent intent = new Intent(this, MusicService.class);
+        startService(intent);
     }
 }
