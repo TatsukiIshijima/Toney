@@ -3,6 +3,7 @@ package com.io.tatsuki.toney.Services;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -19,11 +20,40 @@ import com.io.tatsuki.toney.Utils.ServiceConstant;
 public class MusicService extends Service {
 
     private static final String TAG = MusicService.class.getSimpleName();
+    private final IBinder binder = new MusicServiceBinder();
+
+    /**
+     * Serviceに接続するためのBinder
+     */
+    public class MusicServiceBinder extends Binder {
+
+        public MusicService getMusicService() {
+            return MusicService.this;
+        }
+    }
 
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate");
         showNotification();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.d(TAG, "onBind");
+        return binder;
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        Log.d(TAG, "onRebind");
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(TAG, "onUnbind");
+        return true;
     }
 
     @Override
@@ -59,12 +89,6 @@ public class MusicService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 
     public void showNotification() {

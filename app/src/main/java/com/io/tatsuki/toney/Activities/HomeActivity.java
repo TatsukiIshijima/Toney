@@ -1,9 +1,13 @@
 package com.io.tatsuki.toney.Activities;
 
 import android.Manifest;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
@@ -13,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -29,6 +34,8 @@ public class HomeActivity extends AppCompatActivity {
     private static final int PERMISSION_READ_EX_STORAGE_CODE = 0;
     private ActivityHomeBinding binding;
     private HomeViewModel homeViewModel;
+    private MusicService musicBound;
+    private boolean isBound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +141,10 @@ public class HomeActivity extends AppCompatActivity {
         // イベントの登録
         //EventBus.getDefault().register(this);
         super.onResume();
+        // Serviceをbindする
+        if (isBound == false) {
+            doBindService();
+        }
         // TODO:Serviceが終了していたら再起動
     }
 
@@ -142,6 +153,13 @@ public class HomeActivity extends AppCompatActivity {
         // イベントの解除
         //EventBus.getDefault().unregister(this);
         super.onPause();
+        // Serviceをunbindする
+        doUnbindService();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     /**
@@ -197,5 +215,35 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MusicService.class);
         intent.setAction(ServiceConstant.SERVICE_START);
         startService(intent);
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            Log.d(TAG, "onServiceConnected");
+            musicBound = ((MusicService.MusicServiceBinder) iBinder).getMusicService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            Log.d(TAG, "onServiceDisConnected");
+            musicBound = null;
+        }
+    };
+
+    /**
+     * Serviceとの接続を確立
+     */
+    private void doBindService() {
+        bindService(new Intent(this, MusicService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+        isBound = true;
+    }
+
+    /**
+     * Connectionの解除
+     */
+    private void doUnbindService() {
+        unbindService(serviceConnection);
+        isBound = false;
     }
 }
