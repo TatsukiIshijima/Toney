@@ -30,10 +30,28 @@ public class MusicService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand Received start id : " + startId + " : " + intent);
 
-        if (intent.getBooleanExtra(ServiceConstant.SERVICE_STOP , false)) {
+        if (intent.getAction().equals(ServiceConstant.SERVICE_START)) {
+            Log.d(TAG, "Start Service");
+        }
+
+        if (intent.getAction().equals(ServiceConstant.SERVICE_STOP)) {
             Log.d(TAG, "Stop Service");
             stopSelf();
         }
+
+        if (intent.getAction().equals(ServiceConstant.MUSIC_PLAY)) {
+            // TODO:再生中か停止中かを判断する
+            Log.d(TAG, "Music Play or Pause");
+        }
+
+        if (intent.getAction().equals(ServiceConstant.MUSIC_PREV)) {
+            Log.d(TAG, "Music Prev");
+        }
+
+        if (intent.getAction().equals(ServiceConstant.MUSIC_NEXT)) {
+            Log.d(TAG, "Music Next");
+        }
+
         return START_STICKY;
     }
 
@@ -51,7 +69,9 @@ public class MusicService extends Service {
 
     public void showNotification() {
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification_layout);
-
+        views.setOnClickPendingIntent(R.id.notification_play_pause_button, playIntent());
+        views.setOnClickPendingIntent(R.id.notification_prev_button, prevIntent());
+        views.setOnClickPendingIntent(R.id.notification_next_button, nextIntent());
         views.setOnClickPendingIntent(R.id.notification_collapse_button, stopIntent());
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
@@ -67,8 +87,38 @@ public class MusicService extends Service {
      */
     private PendingIntent stopIntent() {
         Intent stopIntent = new Intent(this, MusicService.class);
-        stopIntent.putExtra(ServiceConstant.SERVICE_STOP, true);
-        PendingIntent pendStopIntent = PendingIntent.getService(this, 0, stopIntent, 0);
-        return pendStopIntent;
+        stopIntent.setAction(ServiceConstant.SERVICE_STOP);
+        return PendingIntent.getService(this, 0, stopIntent, 0);
+    }
+
+    // 以下のメソッドはbindServiceで呼び出し
+    /**
+     * 再生、停止のためのIntent
+     * @return
+     */
+    public PendingIntent playIntent() {
+        Intent playIntent = new Intent(this, MusicService.class);
+        playIntent.setAction(ServiceConstant.MUSIC_PLAY);
+        return PendingIntent.getService(this, 0, playIntent, 0);
+    }
+
+    /**
+     * 前の曲に戻るためのIntent
+     * @return
+     */
+    public PendingIntent prevIntent() {
+        Intent prevIntent = new Intent(this, MusicService.class);
+        prevIntent.setAction(ServiceConstant.MUSIC_PREV);
+        return PendingIntent.getService(this, 0, prevIntent, 0);
+    }
+
+    /**
+     * 次の曲に進むためのIntent
+     * @return
+     */
+    public PendingIntent nextIntent() {
+        Intent nextIntent = new Intent(this, MusicService.class);
+        nextIntent.setAction(ServiceConstant.MUSIC_NEXT);
+        return PendingIntent.getService(this, 0, nextIntent, 0);
     }
 }

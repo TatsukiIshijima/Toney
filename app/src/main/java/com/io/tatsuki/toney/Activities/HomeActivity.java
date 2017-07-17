@@ -19,6 +19,7 @@ import android.view.View;
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Services.MusicService;
+import com.io.tatsuki.toney.Utils.ServiceConstant;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
 
@@ -133,6 +134,7 @@ public class HomeActivity extends AppCompatActivity {
         // イベントの登録
         //EventBus.getDefault().register(this);
         super.onResume();
+        // TODO:Serviceが終了していたら再起動
     }
 
     @Override
@@ -193,6 +195,7 @@ public class HomeActivity extends AppCompatActivity {
      */
     private void startService() {
         Intent intent = new Intent(this, MusicService.class);
+        intent.setAction(ServiceConstant.SERVICE_START);
         startService(intent);
     }
 }
