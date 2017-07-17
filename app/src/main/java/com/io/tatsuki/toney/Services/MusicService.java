@@ -22,7 +22,7 @@ public class MusicService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand Received start id : " + startId + " : " + intent);
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
 
     @Override
