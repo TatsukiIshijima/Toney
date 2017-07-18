@@ -34,10 +34,4 @@ public class SongViewModel {
         songName.set(song.getSongName());
         songArtist.set(song.getSongArtist());
     }
-
-    public void onClickSong(Song song) {
-        Log.d(TAG, "onClick :" + song.getSongName());
-        // Activityに通知
-        EventBus.getDefault().post(new ClickEvent(ClickEvent.playCode, song));
-    }
 }
