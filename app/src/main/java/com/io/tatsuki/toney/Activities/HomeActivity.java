@@ -39,8 +39,6 @@ public class HomeActivity extends AppCompatActivity {
     private static final int PERMISSION_READ_EX_STORAGE_CODE = 0;
     private ActivityHomeBinding binding;
     private HomeViewModel homeViewModel;
-    private MusicService musicBound;
-    private boolean isBound;
     private boolean isStartService = false;
 
     @Override
@@ -156,12 +154,8 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         // イベントの登録
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
         super.onResume();
-        // Serviceをbindする
-        if (!isBound) {
-            doBindService();
-        }
         // TODO:Serviceが終了していたら再起動
         // TODO:Test必須
         if (!isStartService) {
@@ -173,10 +167,8 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         // イベントの解除
-        EventBus.getDefault().unregister(this);
+        //EventBus.getDefault().unregister(this);
         super.onPause();
-        // Serviceをunbindする
-        doUnbindService();
     }
 
     @Override
@@ -188,6 +180,7 @@ public class HomeActivity extends AppCompatActivity {
      * EventBusによる通知受け取り
      * @param event
      */
+    /*
     @Subscribe
     public void onClickEvent(ClickEvent event) {
         Log.d(TAG, "onClickEvent : " + event.getRequestCode());
@@ -212,6 +205,7 @@ public class HomeActivity extends AppCompatActivity {
                 break;
         }
     }
+    */
 
 
     /**
@@ -257,35 +251,5 @@ public class HomeActivity extends AppCompatActivity {
         intent.setAction(ServiceConstant.SERVICE_START);
         isStartService = true;
         startService(intent);
-    }
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            Log.d(TAG, "onServiceConnected");
-            musicBound = ((MusicService.MusicServiceBinder) iBinder).getMusicService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            Log.d(TAG, "onServiceDisConnected");
-            musicBound = null;
-        }
-    };
-
-    /**
-     * Serviceとの接続を確立
-     */
-    private void doBindService() {
-        bindService(new Intent(this, MusicService.class), serviceConnection, Context.BIND_AUTO_CREATE);
-        isBound = true;
-    }
-
-    /**
-     * Connectionの解除
-     */
-    private void doUnbindService() {
-        unbindService(serviceConnection);
-        isBound = false;
     }
 }
