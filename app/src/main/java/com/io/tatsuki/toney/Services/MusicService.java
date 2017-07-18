@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Utils.ServiceConstant;
@@ -118,7 +119,11 @@ public class MusicService extends Service {
                     Log.d(TAG, "SongList : " + song.getSongName());
                 }
                 Log.d(TAG, "Song : " + songs.get(event.getPosition()).getSongName());
+
                 play();
+
+                // Activityに選択された曲を通知
+                EventBus.getDefault().post(new SongEvent(event.getSongs().get(event.getPosition())));
                 break;
             case ClickEvent.nextCode:
                 next();

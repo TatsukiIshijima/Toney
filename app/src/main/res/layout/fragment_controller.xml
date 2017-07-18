@@ -31,8 +31,10 @@
                 android:layout_gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:id="@+id/fragment_controller_image_view"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginRight="16dp"
                     android:layout_gravity="center_vertical"/>
 
                 <LinearLayout

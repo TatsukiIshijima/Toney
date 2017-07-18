@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -23,15 +24,19 @@ import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Services.MusicService;
+import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.Utils.ServiceConstant;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.io.File;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -141,20 +146,22 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * BottomSheetに曲名、アーティスト名を表示
+     * BottomSheetに曲名、アーティスト名、アルバムアートを表示
      * @param song
      */
     private void showSongAndArtist(Song song) {
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerSongText.setText(song.getSongName());
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerArtistText.setText(song.getSongArtist());
+        ImageUtil.setDownloadImage(this, song.getSongArtPath(), binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageView);
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingSongText.setText(song.getSongName());
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingArtistText.setText(song.getSongArtist());
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverURL(String.valueOf(Uri.fromFile(new File(song.getSongArtPath()))));
     }
 
     @Override
     protected void onResume() {
         // イベントの登録
-        //EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
         super.onResume();
         // TODO:Serviceが終了していたら再起動
         // TODO:Test必須
@@ -167,7 +174,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         // イベントの解除
-        //EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);
         super.onPause();
     }
 
@@ -177,35 +184,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * EventBusによる通知受け取り
+     * EventBusによる選択された曲の受け取り
      * @param event
      */
-    /*
     @Subscribe
-    public void onClickEvent(ClickEvent event) {
-        Log.d(TAG, "onClickEvent : " + event.getRequestCode());
-        switch (event.getRequestCode()) {
-            case ClickEvent.prevCode:
-                musicBound.prev();
-                break;
-            case ClickEvent.playCode:
-                musicBound.play();
-                if (event.getSong() != null) {
-                    showSongAndArtist(event.getSong());
-                }
-                break;
-            case ClickEvent.nextCode:
-                musicBound.next();
-                break;
-            case ClickEvent.repeatCode:
-                break;
-            case ClickEvent.shuffleCode:
-                break;
-            default:
-                break;
-        }
+    public void SongEvent(SongEvent event) {
+        showSongAndArtist(event.getSong());
     }
-    */
 
 
     /**
