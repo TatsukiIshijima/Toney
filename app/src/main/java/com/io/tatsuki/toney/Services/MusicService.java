@@ -11,11 +11,14 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Utils.ServiceConstant;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
 
 /**
  * 音楽再生のためのServiceクラス
@@ -24,18 +27,16 @@ import org.greenrobot.eventbus.Subscribe;
 public class MusicService extends Service {
 
     private static final String TAG = MusicService.class.getSimpleName();
-    private final IBinder binder = new MusicServiceBinder();
     private boolean isRepeat = false;
     private boolean isShuffle = false;
+    private ArrayList<Song> songs;
 
-    /**
-     * Serviceに接続するためのBinder
-     */
-    public class MusicServiceBinder extends Binder {
+    public void setSongs(ArrayList<Song> songs) {
+        this.songs = songs;
+    }
 
-        public MusicService getMusicService() {
-            return MusicService.this;
-        }
+    public ArrayList<Song> getSongs() {
+        return songs;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class MusicService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
-        return binder;
+        return null;
     }
 
     @Override
@@ -112,6 +113,11 @@ public class MusicService extends Service {
                 prev();
                 break;
             case ClickEvent.playCode:
+                setSongs(event.getSongs());
+                for (Song song : event.getSongs()) {
+                    Log.d(TAG, "SongList : " + song.getSongName());
+                }
+                Log.d(TAG, "Song : " + songs.get(event.getPosition()).getSongName());
                 play();
                 break;
             case ClickEvent.nextCode:

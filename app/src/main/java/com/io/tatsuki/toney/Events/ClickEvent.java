@@ -4,6 +4,8 @@ import com.io.tatsuki.toney.Models.Album;
 import com.io.tatsuki.toney.Models.Artist;
 import com.io.tatsuki.toney.Models.Song;
 
+import java.util.ArrayList;
+
 /**
  * EventBusのよりActivityやFragmentにクリックを通知するためのEvent
  */
@@ -18,22 +20,28 @@ public class ClickEvent {
     public static final int shuffleCode = 4;
 
     private int requestCode;
-    private Song song;
+    private ArrayList<Song> songs;
+    private int position;
 
     public ClickEvent(int requestCode) {
         this.requestCode = requestCode;
     }
 
-    public ClickEvent(int requestCode, Song song) {
+    public ClickEvent(int requestCode, ArrayList<Song> songs, int position) {
         this.requestCode = requestCode;
-        this.song = song;
+        this.songs = songs;
+        this.position = position;
     }
 
     public int getRequestCode() {
         return this.requestCode;
     }
 
-    public Song getSong() {
-        return this.song;
+    public ArrayList<Song> getSongs() {
+        return songs;
+    }
+
+    public int getPosition() {
+        return position;
     }
 }
