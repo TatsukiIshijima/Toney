@@ -10,8 +10,12 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Utils.ServiceConstant;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * 音楽再生のためのServiceクラス
@@ -38,6 +42,8 @@ public class MusicService extends Service {
     public void onCreate() {
         Log.d(TAG, "onCreate");
         showNotification();
+        // EventBusの登録
+        EventBus.getDefault().register(this);
     }
 
     @Nullable
@@ -94,6 +100,30 @@ public class MusicService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
+        // EventBusの解除
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onClickEvent(ClickEvent event) {
+        Log.d(TAG, "onClickEvent : " + event.getRequestCode());
+        switch (event.getRequestCode()) {
+            case ClickEvent.prevCode:
+                prev();
+                break;
+            case ClickEvent.playCode:
+                play();
+                break;
+            case ClickEvent.nextCode:
+                next();
+                break;
+            case ClickEvent.repeatCode:
+                break;
+            case ClickEvent.shuffleCode:
+                break;
+            default:
+                break;
+        }
     }
 
     public void showNotification() {
