@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -158,6 +159,10 @@ public class MusicService extends Service {
 
         views.setTextViewText(R.id.notification_song_title_text, songTitle);
         views.setTextViewText(R.id.notification_artist_name_text, artistName);
+        if (albumArtPath != null) {
+            Bitmap bitmap = ImageUtil.decodeBitmap(albumArtPath, 100, 100);
+            views.setImageViewBitmap(R.id.notification_album_image_view, bitmap);
+        }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setCustomContentView(views);
