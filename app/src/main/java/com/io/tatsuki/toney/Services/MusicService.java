@@ -16,6 +16,7 @@ import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Repositories.LocalAccess;
 import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.Utils.ServiceConstant;
 
@@ -35,6 +36,7 @@ public class MusicService extends Service {
     private boolean isRepeat = false;
     private boolean isShuffle = false;
     private ArrayList<Song> songs;
+    private LocalAccess localAccess;
 
     public void setSongs(ArrayList<Song> songs) {
         this.songs = songs;
@@ -47,9 +49,15 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate");
-        showNotification("SongTitle", "ArtistName", null);
         // EventBusの登録
         EventBus.getDefault().register(this);
+
+        // 初回起動時
+        // NotificationとBottomSheetに最初の曲表示
+        localAccess = new LocalAccess(this);
+        setSongs(localAccess.getSongs(null, null));
+        EventBus.getDefault().post(new SongEvent(getSongs().get(0)));
+        showNotification(getSongs().get(0).getSongName(), getSongs().get(0).getSongArtist(), getSongs().get(0).getSongArtPath());
     }
 
     @Nullable
