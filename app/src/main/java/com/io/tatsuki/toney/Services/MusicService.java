@@ -1,5 +1,6 @@
 package com.io.tatsuki.toney.Services;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -10,10 +11,12 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.Utils.ServiceConstant;
 
 import org.greenrobot.eventbus.EventBus;
@@ -28,6 +31,7 @@ import java.util.ArrayList;
 public class MusicService extends Service {
 
     private static final String TAG = MusicService.class.getSimpleName();
+    private boolean isActivityDestroy;
     private boolean isRepeat = false;
     private boolean isShuffle = false;
     private ArrayList<Song> songs;
@@ -43,7 +47,7 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate");
-        showNotification();
+        showNotification("SongTitle", "ArtistName", null);
         // EventBusの登録
         EventBus.getDefault().register(this);
     }
@@ -56,17 +60,6 @@ public class MusicService extends Service {
     }
 
     @Override
-    public void onRebind(Intent intent) {
-        Log.d(TAG, "onRebind");
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        Log.d(TAG, "onUnbind");
-        return true;
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand Received start id : " + startId + " : " + intent);
 
@@ -75,8 +68,11 @@ public class MusicService extends Service {
         }
 
         if (intent.getAction().equals(ServiceConstant.SERVICE_STOP)) {
-            Log.d(TAG, "Stop Service");
-            stopSelf();
+            // Activityが起動中はServiceをStopさせないようにする
+            if (isActivityDestroy) {
+                Log.d(TAG, "Stop Service");
+                stopSelf();
+            }
         }
 
         if (intent.getAction().equals(ServiceConstant.MUSIC_PLAY)) {
@@ -114,16 +110,13 @@ public class MusicService extends Service {
                 prev();
                 break;
             case ClickEvent.playCode:
+                // 曲リストのセット
                 setSongs(event.getSongs());
-                for (Song song : event.getSongs()) {
-                    Log.d(TAG, "SongList : " + song.getSongName());
-                }
-                Log.d(TAG, "Song : " + songs.get(event.getPosition()).getSongName());
-
+                Song song = event.getSongs().get(event.getPosition());
+                showNotification(song.getSongName(), song.getSongArtist(), song.getSongArtPath());
                 play();
-
                 // Activityに選択された曲を通知
-                EventBus.getDefault().post(new SongEvent(event.getSongs().get(event.getPosition())));
+                EventBus.getDefault().post(new SongEvent(song));
                 break;
             case ClickEvent.nextCode:
                 next();
@@ -137,18 +130,33 @@ public class MusicService extends Service {
         }
     }
 
-    public void showNotification() {
+    @Subscribe
+    public void onActivityEvent(ActivityEvent event) {
+        isActivityDestroy = event.isDestroy();
+    }
+
+    /**
+     * Notificationの表示
+     * @param songTitle
+     * @param artistName
+     * @param albumArtPath
+     */
+    private void showNotification(String songTitle, String artistName, String albumArtPath) {
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification_layout);
         views.setOnClickPendingIntent(R.id.notification_play_pause_button, playIntent());
         views.setOnClickPendingIntent(R.id.notification_prev_button, prevIntent());
         views.setOnClickPendingIntent(R.id.notification_next_button, nextIntent());
         views.setOnClickPendingIntent(R.id.notification_collapse_button, stopIntent());
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        views.setTextViewText(R.id.notification_song_title_text, songTitle);
+        views.setTextViewText(R.id.notification_artist_name_text, artistName);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setCustomContentView(views);
         // TODO:アイコンを変更
         builder.setSmallIcon(android.R.drawable.sym_def_app_icon);
-        startForeground(ServiceConstant.NOTIFICATION_ID, builder.build());
+        Notification notification = builder.build();
+        startForeground(ServiceConstant.NOTIFICATION_ID, notification);
     }
 
     /**

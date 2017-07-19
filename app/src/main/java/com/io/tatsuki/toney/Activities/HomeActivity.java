@@ -1,14 +1,10 @@
 package com.io.tatsuki.toney.Activities;
 
 import android.Manifest;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
@@ -23,7 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
-import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
@@ -44,7 +40,6 @@ public class HomeActivity extends AppCompatActivity {
     private static final int PERMISSION_READ_EX_STORAGE_CODE = 0;
     private ActivityHomeBinding binding;
     private HomeViewModel homeViewModel;
-    private boolean isStartService = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,12 +158,6 @@ public class HomeActivity extends AppCompatActivity {
         // イベントの登録
         EventBus.getDefault().register(this);
         super.onResume();
-        // TODO:Serviceが終了していたら再起動
-        // TODO:Test必須
-        if (!isStartService) {
-            Log.d(TAG, "ReStartService");
-            startService();
-        }
     }
 
     @Override
@@ -180,6 +169,8 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        // Activityが破棄されたことをServiceに通知
+        EventBus.getDefault().post(new ActivityEvent(true));
         super.onDestroy();
     }
 
@@ -234,7 +225,6 @@ public class HomeActivity extends AppCompatActivity {
     private void startService() {
         Intent intent = new Intent(this, MusicService.class);
         intent.setAction(ServiceConstant.SERVICE_START);
-        isStartService = true;
         startService(intent);
     }
 }
