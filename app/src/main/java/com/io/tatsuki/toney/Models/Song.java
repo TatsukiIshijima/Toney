@@ -13,6 +13,7 @@ public class Song {
     private Uri songUri;
     private String songArtPath;
     private String songArtist;
+    private long duration;
 
     public String getSongId() {
         return songId;
@@ -52,5 +53,13 @@ public class Song {
 
     public void setSongArtist(String songArtist) {
         this.songArtist = songArtist;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 }
