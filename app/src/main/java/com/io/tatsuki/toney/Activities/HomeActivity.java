@@ -151,6 +151,19 @@ public class HomeActivity extends AppCompatActivity {
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingSongText.setText(song.getSongName());
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingArtistText.setText(song.getSongArtist());
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverURL(String.valueOf(Uri.fromFile(new File(song.getSongArtPath()))));
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setMax(calcSongDuration(song.getDuration()));
+    }
+
+    /**
+     * 曲の長さを秒単位に変換
+     * @param duration
+     * @return
+     */
+    private int calcSongDuration(long duration) {
+        long minute = duration / 60000;
+        long second = (duration - (minute * 60000)) / 1000;
+        long time = minute * 60 + second;
+        return (int)time;
     }
 
     @Override
