@@ -150,8 +150,10 @@ public class HomeActivity extends AppCompatActivity {
         ImageUtil.setDownloadImage(this, song.getSongArtPath(), binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageView);
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingSongText.setText(song.getSongName());
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingArtistText.setText(song.getSongArtist());
-        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverURL(String.valueOf(Uri.fromFile(new File(song.getSongArtPath()))));
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setMax(calcSongDuration(song.getDuration()));
+        if (song.getSongArtPath() != null) {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverURL(String.valueOf(Uri.fromFile(new File(song.getSongArtPath()))));
+        }
     }
 
     /**
