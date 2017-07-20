@@ -34,7 +34,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static final int PERMISSION_READ_EX_STORAGE_CODE = 0;
@@ -51,6 +51,7 @@ public class HomeActivity extends AppCompatActivity {
         binding.setHomeViewModel(homeViewModel);
         binding.activityHomeBottomSheet.fragmentPlaying.setHomeViewModel(homeViewModel);
         binding.activityHomeBottomSheet.fragmentController.setHomeViewModel(homeViewModel);
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setOnClickListener(this);
         setViews(binding);
         setBottomSheetBehavior(binding);
         startService();
@@ -78,6 +79,18 @@ public class HomeActivity extends AppCompatActivity {
         binding.activityHomeDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         binding.activityHomeNavigation.setNavigationItemSelectedListener(selectedListener);
+    }
+
+    /**
+     * MusicPlayerView ClickListener
+     * @param view
+     */
+    @Override
+    public void onClick(View view) {
+        // play
+        //binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
+        // pause
+        //binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
     }
 
     /**
