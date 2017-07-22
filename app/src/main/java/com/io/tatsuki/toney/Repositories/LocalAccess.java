@@ -170,7 +170,7 @@ public class LocalAccess {
                 artist.setArtistKey(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST_KEY)));
                 artist.setArtistName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST)));
                 artist.setAlbumNum(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS)));
-                //artist.setAlbums(getAlbums(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST))));
+                artist.setAlbums(getAlbums(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST))));
                 artist.setSongs(getSongs(null, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists._ID))));
                 artists.add(artist);
                 Log.d(TAG, "Artist:" + artist.getArtistName());
