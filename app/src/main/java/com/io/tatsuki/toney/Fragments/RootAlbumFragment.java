@@ -15,8 +15,12 @@ import com.io.tatsuki.toney.R;
 
 public class RootAlbumFragment extends Fragment {
 
-    public RootAlbumFragment() {}
-
+    public static RootAlbumFragment newInstance() {
+        RootAlbumFragment rootAlbumFragment = new RootAlbumFragment();
+        Bundle args = new Bundle();
+        rootAlbumFragment.setArguments(args);
+        return rootAlbumFragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstance) {

@@ -33,10 +33,10 @@ public class HomePagerAdapter extends FragmentPagerAdapter implements ViewPager.
         switch (position) {
             case 0:
                 // 画面遷移時に重ならないようにRootFragmentを持たせる
-                return new RootArtistFragment();
+                return RootArtistFragment.newInstance();
             case 1:
                 // 画面遷移時に重ならないようにRootFragmentを持たせる
-                return new RootAlbumFragment();
+                return RootAlbumFragment.newInstance();
             case 2:
                 return SongFragment.newInstance();
         }
