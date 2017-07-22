@@ -1,16 +1,13 @@
 package com.io.tatsuki.toney.Activities;
 
-import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,15 +34,23 @@ import java.io.File;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = HomeActivity.class.getSimpleName();
-    private static final int PERMISSION_READ_EX_STORAGE_CODE = 0;
     private ActivityHomeBinding binding;
     private HomeViewModel homeViewModel;
+
+    /**
+     * 画面遷移
+     * @param   activity
+     * @return  intent
+     */
+    public static Intent startIntent(@NonNull Activity activity) {
+        Intent intent = new Intent(activity, HomeActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        checkPermissionExStorage();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
         homeViewModel = new HomeViewModel();
         binding.setHomeViewModel(homeViewModel);
@@ -209,42 +214,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Subscribe
     public void SongEvent(SongEvent event) {
         showSongAndArtist(event.getSong());
-    }
-
-
-    /**
-     * 外部ストレージアクセスのパーミッションチェック
-     */
-    private void checkPermissionExStorage() {
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-        // パーミッションが許可されていない場合
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            // パーミッションの要求
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_READ_EX_STORAGE_CODE);
-        }
-    }
-
-    /**
-     * パーミッションダイアログの結果を受け取る
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_READ_EX_STORAGE_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // パーミッションが得られた場合
-                } else {
-                    // パーミッションが得られない場合、終了
-                    finish();
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     /**
