@@ -1,12 +1,13 @@
 package com.io.tatsuki.toney.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Artist Model
  */
 
-public class Artist {
+public class Artist implements Serializable {
 
     private String ArtistId;
     private String ArtistKey;

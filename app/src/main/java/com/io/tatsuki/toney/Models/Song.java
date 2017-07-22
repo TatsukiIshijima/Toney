@@ -2,11 +2,13 @@ package com.io.tatsuki.toney.Models;
 
 import android.net.Uri;
 
+import java.io.Serializable;
+
 /**
  * Song Model
  */
 
-public class Song {
+public class Song implements Serializable {
 
     private String songId;
     private String songName;
