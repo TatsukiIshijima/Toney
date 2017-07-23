@@ -48,6 +48,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Activityが開始されたことをServiceに通知
+        EventBus.getDefault().post(new ActivityEvent(false));
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
         homeViewModel = new HomeViewModel();

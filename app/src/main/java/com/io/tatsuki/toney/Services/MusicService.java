@@ -136,6 +136,10 @@ public class MusicService extends Service {
         }
     }
 
+    /**
+     * Activityの状態を受け取る
+     * @param event
+     */
     @Subscribe
     public void onActivityEvent(ActivityEvent event) {
         isActivityDestroy = event.isDestroy();
