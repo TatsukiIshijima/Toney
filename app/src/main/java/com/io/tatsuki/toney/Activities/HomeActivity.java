@@ -98,7 +98,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onClick(View view) {
-        showPlayState();
+        musicService.pause();
+        updateControllerAndPlaying();
     }
 
     /**
@@ -175,6 +176,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (song.getSongArtPath() != null) {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverURL(String.valueOf(Uri.fromFile(new File(song.getSongArtPath()))));
         }
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setProgress(0);
+        updateControllerAndPlaying();
     }
 
     /**
@@ -192,17 +195,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Serviceから再生状態を取得し、ボタン等のViewを変える
      */
-    private void showPlayState() {
-        musicService.pause();
-        // TODO:バグ直し
+    private void updateControllerAndPlaying() {
         if (musicService.getPlayState()) {
-            // 再生中の位置をセット
-            //binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setProgress(calcSongDuration(musicService.getCurrentPosition()));
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
-            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));
         } else {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
-            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_play_white));
         }
     }
 
@@ -239,15 +236,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         showSongAndArtist(event.getSong());
     }
 
+    /**
+     * Serviceと接続
+     */
     public void doBindService() {
-        // サービスと接続
         bindService(new Intent(this, MusicService.class), connection, Context.BIND_AUTO_CREATE);
         isBound = true;
     }
 
+    /**
+     * Serviceと切断
+     */
     public void doUnbindService() {
         if (isBound) {
-            // サービスと切断
             unbindService(connection);
             isBound = false;
         }
@@ -257,6 +258,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             musicService = ((MusicService.MusicServiceBinder) iBinder).getService();
+            // Service接続時に画面を更新
+            updateControllerAndPlaying();
         }
 
         @Override
