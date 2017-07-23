@@ -37,8 +37,6 @@ public class AlbumFragment extends Fragment {
         return albumFragment;
     }
 
-    public AlbumFragment() {}
-
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);

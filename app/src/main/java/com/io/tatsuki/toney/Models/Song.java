@@ -2,15 +2,17 @@ package com.io.tatsuki.toney.Models;
 
 import android.net.Uri;
 
+import java.io.Serializable;
+
 /**
  * Song Model
  */
 
-public class Song {
+public class Song implements Serializable {
 
     private String songId;
     private String songName;
-    private Uri songUri;
+    private String songPath;
     private String songArtPath;
     private String songArtist;
     private long duration;
@@ -31,12 +33,13 @@ public class Song {
         this.songName = songName;
     }
 
-    public Uri getSongUri() {
-        return songUri;
+    // SerializeなのでStringでget, setしておく
+    public String getSongPath() {
+        return songPath;
     }
 
-    public void setSongUri(Uri songUri) {
-        this.songUri = songUri;
+    public void setSongPath(String songPath) {
+        this.songPath = songPath;
     }
 
     public String getSongArtPath() {

@@ -11,14 +11,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".Activities.HomeActivity">
+        <activity android:name=".Activities.SplashActivity"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".Services.MusicService"/>
+        <activity
+            android:name=".Activities.HomeActivity"
+            android:screenOrientation="portrait"/>
+
+        <service
+            android:name=".Services.MusicService" />
+
     </application>
 
 </manifest>

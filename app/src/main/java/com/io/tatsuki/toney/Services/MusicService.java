@@ -5,7 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -14,10 +14,8 @@ import android.widget.RemoteViews;
 
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
-import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
-import com.io.tatsuki.toney.Repositories.LocalAccess;
 import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.Utils.ServiceConstant;
 
@@ -33,32 +31,20 @@ import java.util.ArrayList;
 public class MusicService extends Service {
 
     private static final String TAG = MusicService.class.getSimpleName();
+    public static final String POSITION_KEY = "POSITION";
+    public static final String SONGS_KEY = "SONGS";
     private boolean isActivityDestroy;
     private boolean isRepeat = false;
     private boolean isShuffle = false;
     private ArrayList<Song> songs;
-    private LocalAccess localAccess;
-
-    public void setSongs(ArrayList<Song> songs) {
-        this.songs = songs;
-    }
-
-    public ArrayList<Song> getSongs() {
-        return songs;
-    }
+    private int position;
 
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate");
         // EventBusの登録
         EventBus.getDefault().register(this);
-
-        // 初回起動時
-        // NotificationとBottomSheetに最初の曲表示
-        localAccess = new LocalAccess(this);
-        setSongs(localAccess.getSongs(null, null));
-        EventBus.getDefault().post(new SongEvent(getSongs().get(0)));
-        showNotification(getSongs().get(0).getSongName(), getSongs().get(0).getSongArtist(), getSongs().get(0).getSongArtPath());
+        // TODO:初回起動処理
     }
 
     @Nullable
@@ -74,7 +60,20 @@ public class MusicService extends Service {
 
         if (intent.getAction().equals(ServiceConstant.SERVICE_START)) {
             Log.d(TAG, "Start Service");
+            if (intent != null) {
+                Log.d(TAG, "Start Service : Not Null");
+
+                // SongAdapterでのタップされた位置とリストを受け取る
+                Bundle bundle = intent.getExtras();
+                position = bundle.getInt(POSITION_KEY);
+                songs = (ArrayList<Song>) bundle.getSerializable(SONGS_KEY);
+                showNotification(songs.get(position).getSongName(), songs.get(position).getSongArtist(), songs.get(position).getSongArtPath());
+            } else {
+                Log.d(TAG, "Start Service : Null");
+            }
         }
+
+        // 以下のメソッドはNotificationのイベント
 
         if (intent.getAction().equals(ServiceConstant.SERVICE_STOP)) {
             // Activityが起動中はServiceをStopさせないようにする
@@ -111,6 +110,10 @@ public class MusicService extends Service {
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * ホーム画面のコントローラーや再生画面のイベントを受け取る
+     * @param event
+     */
     @Subscribe
     public void onClickEvent(ClickEvent event) {
         Log.d(TAG, "onClickEvent : " + event.getRequestCode());
@@ -119,13 +122,7 @@ public class MusicService extends Service {
                 prev();
                 break;
             case ClickEvent.playCode:
-                // 曲リストのセット
-                setSongs(event.getSongs());
-                Song song = event.getSongs().get(event.getPosition());
-                showNotification(song.getSongName(), song.getSongArtist(), song.getSongArtPath());
                 play();
-                // Activityに選択された曲を通知
-                EventBus.getDefault().post(new SongEvent(song));
                 break;
             case ClickEvent.nextCode:
                 next();
@@ -139,6 +136,10 @@ public class MusicService extends Service {
         }
     }
 
+    /**
+     * Activityの状態を受け取る
+     * @param event
+     */
     @Subscribe
     public void onActivityEvent(ActivityEvent event) {
         isActivityDestroy = event.isDestroy();
