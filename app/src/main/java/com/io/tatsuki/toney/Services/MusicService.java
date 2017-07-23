@@ -197,6 +197,11 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
             Bitmap bitmap = ImageUtil.decodeBitmap(albumArtPath, 100, 100);
             views.setImageViewBitmap(R.id.notification_album_image_view, bitmap);
         }
+        if (simpleExoPlayer.getPlayWhenReady()) {
+            views.setImageViewResource(R.id.notification_play_pause_button, R.drawable.notification_pause);
+        } else {
+            views.setImageViewResource(R.id.notification_play_pause_button, R.drawable.notification_play);
+        }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setCustomContentView(views);
@@ -312,6 +317,10 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
         } else {
             simpleExoPlayer.setPlayWhenReady(false);
         }
+        // Notification更新
+        showNotification(songs.get(position).getSongName(),
+                         songs.get(position).getSongArtist(),
+                         songs.get(position).getSongArtPath());
     }
 
     /**

@@ -195,11 +195,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Serviceから再生状態を取得し、ボタン等のViewを変える
      */
+    // TODO:コントローラのクリックイベントにも以下メソッドを追加する
     private void updateControllerAndPlaying() {
         if (musicService.getPlayState()) {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
+            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));
         } else {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
+            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_play_white));
         }
     }
 
@@ -216,7 +219,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // イベントの解除
         EventBus.getDefault().unregister(this);
         doUnbindService();
-
         super.onPause();
     }
 
