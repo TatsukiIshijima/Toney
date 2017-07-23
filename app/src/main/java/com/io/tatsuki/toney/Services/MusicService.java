@@ -59,7 +59,6 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     private boolean isActivityDestroy;
     private boolean isRepeat = false;
     private boolean isShuffle = false;
-    private boolean isPlaying;
     private ArrayList<Song> songs;
     private int position;
     private SimpleExoPlayer simpleExoPlayer;
@@ -286,7 +285,7 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
      */
     public void play(int position) {
         // 再生中なら停止させる
-        if (isPlaying) simpleExoPlayer.setPlayWhenReady(false);
+        if (simpleExoPlayer.getPlayWhenReady()) simpleExoPlayer.setPlayWhenReady(false);
         prepare(songs.get(position).getSongPath());
         simpleExoPlayer.setPlayWhenReady(true);
         showNotification(songs.get(position).getSongName(),
