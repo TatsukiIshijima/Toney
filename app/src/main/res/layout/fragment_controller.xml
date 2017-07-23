@@ -81,6 +81,7 @@
                         android:onClick="@{homeViewModel.onClickPrev}"/>
 
                     <ImageButton
+                        android:id="@+id/fragment_controller_image_button_play"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="20dp"

@@ -1,9 +1,13 @@
 package com.io.tatsuki.toney.Activities;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
@@ -20,6 +24,7 @@ import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Services.MusicService;
 import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
@@ -34,6 +39,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = HomeActivity.class.getSimpleName();
     private ActivityHomeBinding binding;
     private HomeViewModel homeViewModel;
+    private MusicService musicService;
+    private boolean isBound;
 
     /**
      * 画面遷移
@@ -91,10 +98,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onClick(View view) {
-        // play
-        //binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
-        // pause
-        //binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
+        showPlayState();
     }
 
     /**
@@ -185,10 +189,28 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         return (int)time;
     }
 
+    /**
+     * Serviceから再生状態を取得し、ボタン等のViewを変える
+     */
+    private void showPlayState() {
+        musicService.pause();
+        // TODO:バグ直し
+        if (musicService.getPlayState()) {
+            // 再生中の位置をセット
+            //binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setProgress(calcSongDuration(musicService.getCurrentPosition()));
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
+            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));
+        } else {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
+            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_play_white));
+        }
+    }
+
     @Override
     protected void onResume() {
         // イベントの登録
         EventBus.getDefault().register(this);
+        doBindService();
         super.onResume();
     }
 
@@ -196,6 +218,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         // イベントの解除
         EventBus.getDefault().unregister(this);
+        doUnbindService();
+
         super.onPause();
     }
 
@@ -214,4 +238,30 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void SongEvent(SongEvent event) {
         showSongAndArtist(event.getSong());
     }
+
+    public void doBindService() {
+        // サービスと接続
+        bindService(new Intent(this, MusicService.class), connection, Context.BIND_AUTO_CREATE);
+        isBound = true;
+    }
+
+    public void doUnbindService() {
+        if (isBound) {
+            // サービスと切断
+            unbindService(connection);
+            isBound = false;
+        }
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            musicService = ((MusicService.MusicServiceBinder) iBinder).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            musicService = null;
+        }
+    };
 }

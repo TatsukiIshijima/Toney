@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -56,12 +57,19 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     private static final String TAG = MusicService.class.getSimpleName();
     public static final String POSITION_KEY = "POSITION";
     public static final String SONGS_KEY = "SONGS";
+    private final IBinder binder = new MusicServiceBinder();
     private boolean isActivityDestroy;
     private boolean isRepeat = false;
     private boolean isShuffle = false;
     private ArrayList<Song> songs;
     private int position;
     private SimpleExoPlayer simpleExoPlayer;
+
+    public class MusicServiceBinder extends Binder {
+        public MusicService getService() {
+            return MusicService.this;
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -77,7 +85,7 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
-        return null;
+        return binder;
     }
 
     @Override
@@ -328,6 +336,22 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
      */
     public void setRepeat() {
         Log.d(TAG, "setRepeat");
+    }
+
+    /**
+     * 再生状態を取得
+     * @return
+     */
+    public boolean getPlayState() {
+        return simpleExoPlayer.getPlayWhenReady();
+    }
+
+    /**
+     * 再生中の位置の取得
+     * @return
+     */
+    public long getCurrentPosition() {
+        return simpleExoPlayer.getCurrentPosition();
     }
 
     @Override
