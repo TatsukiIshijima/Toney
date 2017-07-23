@@ -20,9 +20,7 @@ import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
-import com.io.tatsuki.toney.Services.MusicService;
 import com.io.tatsuki.toney.Utils.ImageUtil;
-import com.io.tatsuki.toney.Utils.ServiceConstant;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
 
@@ -59,7 +57,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setOnClickListener(this);
         setViews(binding);
         setBottomSheetBehavior(binding);
-        startService();
     }
 
     /**
@@ -214,14 +211,5 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Subscribe
     public void SongEvent(SongEvent event) {
         showSongAndArtist(event.getSong());
-    }
-
-    /**
-     * Serviceの開始
-     */
-    private void startService() {
-        Intent intent = new Intent(this, MusicService.class);
-        intent.setAction(ServiceConstant.SERVICE_START);
-        startService(intent);
     }
 }

@@ -1,16 +1,20 @@
 package com.io.tatsuki.toney.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Services.MusicService;
 import com.io.tatsuki.toney.Utils.ImageUtil;
+import com.io.tatsuki.toney.Utils.ServiceConstant;
 import com.io.tatsuki.toney.ViewModels.SongViewModel;
 import com.io.tatsuki.toney.databinding.ItemSongBinding;
 
@@ -56,8 +60,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Serviceに通知
-                EventBus.getDefault().post(new ClickEvent(ClickEvent.playCode, songs, position));
+                // Service開始
+                startService(position);
+                // Activityに通知
+                EventBus.getDefault().post(new SongEvent(songs.get(position)));
             }
         });
     }
@@ -73,6 +79,21 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
 
     private Song getItemAt(int position) {
         return songs.get(position);
+    }
+
+    /**
+     * Serviceの開始
+     */
+    private void startService(int position) {
+        Intent intent = new Intent(context, MusicService.class);
+        intent.setAction(ServiceConstant.SERVICE_START);
+        Bundle args = new Bundle();
+        args.putInt(MusicService.POSITION_KEY, position);
+        args.putSerializable(MusicService.SONGS_KEY, songs);
+        intent.putExtras(args);
+        // Serializeは基本的な型しか送れない
+        // Song Class にはUriが含まれているため送れない
+        context.startService(intent);
     }
 
     /**
