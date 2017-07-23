@@ -62,8 +62,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
             public void onClick(View view) {
                 // Service開始
                 startService(position);
-                // Activityに通知
-                EventBus.getDefault().post(new SongEvent(songs.get(position)));
             }
         });
     }

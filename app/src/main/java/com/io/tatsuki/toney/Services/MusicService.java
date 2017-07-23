@@ -36,6 +36,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Utils.ImageUtil;
@@ -68,9 +69,9 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
         Log.d(TAG, "onCreate");
         // EventBusの登録
         EventBus.getDefault().register(this);
-        // TODO:初回起動処理
         // Playerの初期化
         initPlayer();
+        // TODO:初回起動処理
     }
 
     @Nullable
@@ -93,14 +94,8 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
                 Bundle bundle = intent.getExtras();
                 position = bundle.getInt(POSITION_KEY);
                 songs = (ArrayList<Song>) bundle.getSerializable(SONGS_KEY);
-
-                // 再生準備と再生
-                prepare(songs.get(position).getSongPath());
-                if (isPlaying) simpleExoPlayer.setPlayWhenReady(false);
-                play();
-                showNotification(songs.get(position).getSongName(),
-                                 songs.get(position).getSongArtist(),
-                                 songs.get(position).getSongArtPath());
+                // 再生
+                play(position);
             }
         }
 
@@ -115,9 +110,7 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
         }
 
         if (intent.getAction().equals(ServiceConstant.MUSIC_PLAY)) {
-            // TODO:再生中か停止中かを判断する
-            Log.d(TAG, "Music Play or Pause");
-            play();
+            pause();
         }
 
         if (intent.getAction().equals(ServiceConstant.MUSIC_PREV)) {
@@ -155,7 +148,7 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
                 prev();
                 break;
             case ClickEvent.playCode:
-                play();
+                pause();
                 break;
             case ClickEvent.nextCode:
                 next();
@@ -280,20 +273,37 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
      * 前の曲再生
      */
     public void prev() {
-        Log.d(TAG, "prev");
+        //Log.d(TAG, "prev");
+        if (position != 0) {
+            position -= 1;
+            play(position);
+        }
     }
 
     /**
-     * 再生・停止
+     * 再生
+     * @param position  ポジション
      */
-    public void play() {
-        //Log.d(TAG, "play");
-        if (!isPlaying) {
+    public void play(int position) {
+        // 再生中なら停止させる
+        if (isPlaying) simpleExoPlayer.setPlayWhenReady(false);
+        prepare(songs.get(position).getSongPath());
+        simpleExoPlayer.setPlayWhenReady(true);
+        showNotification(songs.get(position).getSongName(),
+                         songs.get(position).getSongArtist(),
+                         songs.get(position).getSongArtPath());
+        // Activityに通知
+        EventBus.getDefault().post(new SongEvent(songs.get(position)));
+    }
+
+    /**
+     * 一時停止
+     */
+    public void pause() {
+        if (!simpleExoPlayer.getPlayWhenReady()) {
             simpleExoPlayer.setPlayWhenReady(true);
-            isPlaying = true;
         } else {
             simpleExoPlayer.setPlayWhenReady(false);
-            isPlaying = false;
         }
     }
 
@@ -301,7 +311,10 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
      * 次の曲再生
      */
     public void next() {
-        Log.d(TAG, "next");
+        if (position != songs.size() - 1) {
+            position += 1;
+            play(position);
+        }
     }
 
     /**
@@ -335,8 +348,21 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        // 止まる原因はここにありそう...
-        Log.d(TAG, "onPlayerStateChanged : " + playWhenReady + ", " + playbackState);
+        switch (playbackState) {
+            case ExoPlayer.STATE_BUFFERING:
+                Log.d(TAG, "onPlayerStateChanged : State buffering");
+                break;
+            case ExoPlayer.STATE_READY:
+                Log.d(TAG, "onPlayerStateChanged : State ready");
+                break;
+            case ExoPlayer.STATE_ENDED:
+                Log.d(TAG, "onPlayerStateChanged : State ended");
+                next();
+                break;
+            case ExoPlayer.STATE_IDLE:
+                Log.d(TAG, "onPlayerStateChanged : State IDLE");
+                break;
+        }
     }
 
     @Override
