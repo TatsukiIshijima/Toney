@@ -21,7 +21,7 @@ import android.view.View;
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
-import com.io.tatsuki.toney.Events.SongEvent;
+import com.io.tatsuki.toney.Events.PlaySongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Services.MusicService;
@@ -233,7 +233,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * @param event
      */
     @Subscribe
-    public void SongEvent(SongEvent event) {
+    public void PlaySongEvent(PlaySongEvent event) {
         showSongAndArtist(event.getSong(), 0);
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));

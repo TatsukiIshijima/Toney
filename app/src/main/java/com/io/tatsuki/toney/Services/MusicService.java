@@ -38,7 +38,7 @@ import com.google.android.exoplayer2.util.Util;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
-import com.io.tatsuki.toney.Events.SongEvent;
+import com.io.tatsuki.toney.Events.PlaySongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Utils.ImageUtil;
@@ -310,7 +310,7 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
                          songs.get(position).getSongArtist(),
                          songs.get(position).getSongArtPath());
         // Activityに通知
-        EventBus.getDefault().post(new SongEvent(songs.get(position)));
+        EventBus.getDefault().post(new PlaySongEvent(songs.get(position)));
     }
 
     /**
