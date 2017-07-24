@@ -4,11 +4,11 @@ package com.io.tatsuki.toney.Events;
  * Notificationのイベントを通知するクラス
  */
 
-public class NotificationEvent {
+public class PlayPauseEvent {
 
     private boolean isPlaying;
 
-    public NotificationEvent(boolean isPlaying) {
+    public PlayPauseEvent(boolean isPlaying) {
         this.isPlaying = isPlaying;
     }
 

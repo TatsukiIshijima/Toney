@@ -15,13 +15,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ActivityEvent;
-import com.io.tatsuki.toney.Events.NotificationEvent;
+import com.io.tatsuki.toney.Events.PlayPauseEvent;
 import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
@@ -241,13 +240,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Notificationの再生・停止ボタンのイベントを受け取る
+     * 再生・停止ボタンのイベントを受け取る
      * @param event
      */
     @Subscribe
-    public void NotificationEvent(NotificationEvent event) {
+    public void PlayPauseEvent(PlayPauseEvent event) {
         updateControllerAndPlaying(event.isPlaying());
     }
+
 
     /**
      * Serviceと接続

@@ -37,7 +37,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
-import com.io.tatsuki.toney.Events.NotificationEvent;
+import com.io.tatsuki.toney.Events.PlayPauseEvent;
 import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
@@ -120,7 +120,7 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
         if (intent.getAction().equals(ServiceConstant.MUSIC_PLAY)) {
             pause();
             // NotificationのイベントをActivityに通知
-            EventBus.getDefault().post(new NotificationEvent(simpleExoPlayer.getPlayWhenReady()));
+            EventBus.getDefault().post(new PlayPauseEvent(simpleExoPlayer.getPlayWhenReady()));
         }
 
         if (intent.getAction().equals(ServiceConstant.MUSIC_PREV)) {
@@ -159,6 +159,8 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
                 break;
             case ClickEvent.playCode:
                 pause();
+                // コントローラーの更新のためEventで通知
+                EventBus.getDefault().post(new PlayPauseEvent(simpleExoPlayer.getPlayWhenReady()));
                 break;
             case ClickEvent.nextCode:
                 next();
