@@ -194,7 +194,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Serviceから再生状態を取得し、ボタン等のViewを変える
      */
-    // TODO:コントローラのクリックイベントにも以下メソッドを追加する
     private void updateControllerAndPlaying(boolean isPlaying) {
         if (isPlaying) {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
