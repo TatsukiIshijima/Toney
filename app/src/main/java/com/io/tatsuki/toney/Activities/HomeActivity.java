@@ -1,9 +1,13 @@
 package com.io.tatsuki.toney.Activities;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
@@ -11,15 +15,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ActivityEvent;
-import com.io.tatsuki.toney.Events.SongEvent;
+import com.io.tatsuki.toney.Events.PlayPauseEvent;
+import com.io.tatsuki.toney.Events.PlaySongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Services.MusicService;
 import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
 import com.io.tatsuki.toney.databinding.ActivityHomeBinding;
@@ -34,6 +39,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = HomeActivity.class.getSimpleName();
     private ActivityHomeBinding binding;
     private HomeViewModel homeViewModel;
+    private MusicService musicService;
+    private boolean isBound;
 
     /**
      * 画面遷移
@@ -91,10 +98,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onClick(View view) {
-        // play
-        //binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
-        // pause
-        //binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
+        musicService.pause();
+        updateControllerAndPlaying(musicService.getPlayState());
     }
 
     /**
@@ -161,7 +166,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * BottomSheetに曲名、アーティスト名、アルバムアートを表示
      * @param song
      */
-    private void showSongAndArtist(Song song) {
+    private void showSongAndArtist(Song song, int currentProgress) {
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerSongText.setText(song.getSongName());
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerArtistText.setText(song.getSongArtist());
         ImageUtil.setDownloadImage(this, song.getSongArtPath(), binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageView);
@@ -171,6 +176,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (song.getSongArtPath() != null) {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverURL(String.valueOf(Uri.fromFile(new File(song.getSongArtPath()))));
         }
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setProgress(currentProgress);
     }
 
     /**
@@ -185,10 +191,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         return (int)time;
     }
 
+    /**
+     * Serviceから再生状態を取得し、ボタン等のViewを変える
+     */
+    // TODO:コントローラのクリックイベントにも以下メソッドを追加する
+    private void updateControllerAndPlaying(boolean isPlaying) {
+        if (isPlaying) {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
+            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));
+        } else {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
+            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_play_white));
+        }
+    }
+
     @Override
     protected void onResume() {
         // イベントの登録
         EventBus.getDefault().register(this);
+        doBindService();
         super.onResume();
     }
 
@@ -196,6 +217,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         // イベントの解除
         EventBus.getDefault().unregister(this);
+        doUnbindService();
         super.onPause();
     }
 
@@ -211,7 +233,54 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * @param event
      */
     @Subscribe
-    public void SongEvent(SongEvent event) {
-        showSongAndArtist(event.getSong());
+    public void PlaySongEvent(PlaySongEvent event) {
+        showSongAndArtist(event.getSong(), 0);
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));
     }
+
+    /**
+     * 再生・停止ボタンのイベントを受け取る
+     * @param event
+     */
+    @Subscribe
+    public void PlayPauseEvent(PlayPauseEvent event) {
+        updateControllerAndPlaying(event.isPlaying());
+    }
+
+
+    /**
+     * Serviceと接続
+     */
+    public void doBindService() {
+        bindService(new Intent(this, MusicService.class), connection, Context.BIND_AUTO_CREATE);
+        isBound = true;
+    }
+
+    /**
+     * Serviceと切断
+     */
+    public void doUnbindService() {
+        if (isBound) {
+            unbindService(connection);
+            isBound = false;
+        }
+    }
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            musicService = ((MusicService.MusicServiceBinder) iBinder).getService();
+            // 初回起動時にはsongsがセットされていないのでNull判定を行う
+            if (musicService.getSong() != null) {
+                showSongAndArtist(musicService.getSong(), calcSongDuration(musicService.getCurrentPosition()));
+                updateControllerAndPlaying(musicService.getPlayState());
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            musicService = null;
+        }
+    };
 }

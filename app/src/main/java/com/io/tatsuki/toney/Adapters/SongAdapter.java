@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Services.MusicService;
@@ -17,8 +16,6 @@ import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.Utils.ServiceConstant;
 import com.io.tatsuki.toney.ViewModels.SongViewModel;
 import com.io.tatsuki.toney.databinding.ItemSongBinding;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -62,8 +59,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
             public void onClick(View view) {
                 // Service開始
                 startService(position);
-                // Activityに通知
-                EventBus.getDefault().post(new SongEvent(songs.get(position)));
             }
         });
     }

@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -12,8 +14,31 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Events.PlayPauseEvent;
+import com.io.tatsuki.toney.Events.PlaySongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Utils.ImageUtil;
@@ -28,22 +53,32 @@ import java.util.ArrayList;
  * 音楽再生のためのServiceクラス
  */
 
-public class MusicService extends Service {
+public class MusicService extends Service implements ExoPlayer.EventListener{
 
     private static final String TAG = MusicService.class.getSimpleName();
     public static final String POSITION_KEY = "POSITION";
     public static final String SONGS_KEY = "SONGS";
+    private final IBinder binder = new MusicServiceBinder();
     private boolean isActivityDestroy;
     private boolean isRepeat = false;
     private boolean isShuffle = false;
     private ArrayList<Song> songs;
     private int position;
+    private SimpleExoPlayer simpleExoPlayer;
+
+    public class MusicServiceBinder extends Binder {
+        public MusicService getService() {
+            return MusicService.this;
+        }
+    }
 
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate");
         // EventBusの登録
         EventBus.getDefault().register(this);
+        // Playerの初期化
+        initPlayer();
         // TODO:初回起動処理
     }
 
@@ -51,7 +86,7 @@ public class MusicService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
-        return null;
+        return binder;
     }
 
     @Override
@@ -67,9 +102,8 @@ public class MusicService extends Service {
                 Bundle bundle = intent.getExtras();
                 position = bundle.getInt(POSITION_KEY);
                 songs = (ArrayList<Song>) bundle.getSerializable(SONGS_KEY);
-                showNotification(songs.get(position).getSongName(), songs.get(position).getSongArtist(), songs.get(position).getSongArtPath());
-            } else {
-                Log.d(TAG, "Start Service : Null");
+                // 再生
+                play(position);
             }
         }
 
@@ -84,9 +118,9 @@ public class MusicService extends Service {
         }
 
         if (intent.getAction().equals(ServiceConstant.MUSIC_PLAY)) {
-            // TODO:再生中か停止中かを判断する
-            Log.d(TAG, "Music Play or Pause");
-            play();
+            pause();
+            // NotificationのイベントをActivityに通知
+            EventBus.getDefault().post(new PlayPauseEvent(simpleExoPlayer.getPlayWhenReady()));
         }
 
         if (intent.getAction().equals(ServiceConstant.MUSIC_PREV)) {
@@ -108,6 +142,8 @@ public class MusicService extends Service {
         Log.d(TAG, "onDestroy");
         // EventBusの解除
         EventBus.getDefault().unregister(this);
+        // playerの停止
+        simpleExoPlayer.setPlayWhenReady(false);
     }
 
     /**
@@ -122,7 +158,9 @@ public class MusicService extends Service {
                 prev();
                 break;
             case ClickEvent.playCode:
-                play();
+                pause();
+                // コントローラーの更新のためEventで通知
+                EventBus.getDefault().post(new PlayPauseEvent(simpleExoPlayer.getPlayWhenReady()));
                 break;
             case ClickEvent.nextCode:
                 next();
@@ -163,6 +201,11 @@ public class MusicService extends Service {
         if (albumArtPath != null) {
             Bitmap bitmap = ImageUtil.decodeBitmap(albumArtPath, 100, 100);
             views.setImageViewBitmap(R.id.notification_album_image_view, bitmap);
+        }
+        if (simpleExoPlayer.getPlayWhenReady()) {
+            views.setImageViewResource(R.id.notification_play_pause_button, R.drawable.notification_pause);
+        } else {
+            views.setImageViewResource(R.id.notification_play_pause_button, R.drawable.notification_play);
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
@@ -214,24 +257,85 @@ public class MusicService extends Service {
     }
 
     /**
-     * 前の曲再生
+     * ExoPlayerの初期化
      */
-    public void prev() {
-        Log.d(TAG, "prev");
+    private void initPlayer() {
+        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        //ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+        TrackSelection.Factory trackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        TrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
+
+        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
+        simpleExoPlayer.addListener(this);
     }
 
     /**
-     * 再生・停止
+     * ExoPlayerの準備（曲のセット）
+     * @param songPath  曲のパス
      */
-    public void play() {
-        Log.d(TAG, "play");
+    private void prepare(String songPath) {
+        ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+        DefaultBandwidthMeter defaultBandwidthMeter = new DefaultBandwidthMeter();
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this,
+                Util.getUserAgent(this, "mediaPlayerSample"), defaultBandwidthMeter);
+        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(songPath),
+                                                                     dataSourceFactory,
+                                                                     extractorsFactory,
+                                                                     null,
+                                                                     null);
+        simpleExoPlayer.prepare(mediaSource);
+    }
+
+    /**
+     * 前の曲再生
+     */
+    public void prev() {
+        //Log.d(TAG, "prev");
+        if (position != 0) {
+            position -= 1;
+            play(position);
+        }
+    }
+
+    /**
+     * 再生
+     * @param position  ポジション
+     */
+    public void play(int position) {
+        // 再生中なら停止させる
+        if (simpleExoPlayer.getPlayWhenReady()) simpleExoPlayer.setPlayWhenReady(false);
+        prepare(songs.get(position).getSongPath());
+        simpleExoPlayer.setPlayWhenReady(true);
+        showNotification(songs.get(position).getSongName(),
+                         songs.get(position).getSongArtist(),
+                         songs.get(position).getSongArtPath());
+        // Activityに通知
+        EventBus.getDefault().post(new PlaySongEvent(songs.get(position)));
+    }
+
+    /**
+     * 一時停止
+     */
+    public void pause() {
+        if (!simpleExoPlayer.getPlayWhenReady()) {
+            simpleExoPlayer.setPlayWhenReady(true);
+        } else {
+            simpleExoPlayer.setPlayWhenReady(false);
+        }
+        // Notification更新
+        showNotification(songs.get(position).getSongName(),
+                         songs.get(position).getSongArtist(),
+                         songs.get(position).getSongArtPath());
     }
 
     /**
      * 次の曲再生
      */
     public void next() {
-        Log.d(TAG, "next");
+        if (position != songs.size() - 1) {
+            position += 1;
+            play(position);
+        }
     }
 
     /**
@@ -246,5 +350,82 @@ public class MusicService extends Service {
      */
     public void setRepeat() {
         Log.d(TAG, "setRepeat");
+    }
+
+    /**
+     * 再生状態を取得
+     * @return
+     */
+    public boolean getPlayState() {
+        return simpleExoPlayer.getPlayWhenReady();
+    }
+
+    /**
+     * 再生中の位置の取得
+     * @return
+     */
+    public long getCurrentPosition() {
+        return simpleExoPlayer.getCurrentPosition();
+    }
+
+    /**
+     * 再生中の曲の取得
+     * @return
+     */
+    public Song getSong() {
+        if (songs != null) {
+            return songs.get(position);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+    }
+
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+        Log.d(TAG, "onTracksChanged");
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+        Log.d(TAG, "onLoadingChanged : " + isLoading);
+    }
+
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        switch (playbackState) {
+            case ExoPlayer.STATE_BUFFERING:
+                Log.d(TAG, "onPlayerStateChanged : State buffering");
+                break;
+            case ExoPlayer.STATE_READY:
+                Log.d(TAG, "onPlayerStateChanged : State ready");
+                break;
+            case ExoPlayer.STATE_ENDED:
+                Log.d(TAG, "onPlayerStateChanged : State ended");
+                next();
+                break;
+            case ExoPlayer.STATE_IDLE:
+                Log.d(TAG, "onPlayerStateChanged : State IDLE");
+                break;
+        }
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+        Log.d(TAG, "onPlayerError : " + error);
+    }
+
+    @Override
+    public void onPositionDiscontinuity() {
+
+    }
+
+    @Override
+    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
     }
 }
