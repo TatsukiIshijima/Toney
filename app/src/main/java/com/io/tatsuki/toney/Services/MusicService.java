@@ -37,6 +37,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
+import com.io.tatsuki.toney.Events.NotificationEvent;
 import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
@@ -118,6 +119,8 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
 
         if (intent.getAction().equals(ServiceConstant.MUSIC_PLAY)) {
             pause();
+            // NotificationのイベントをActivityに通知
+            EventBus.getDefault().post(new NotificationEvent(simpleExoPlayer.getPlayWhenReady()));
         }
 
         if (intent.getAction().equals(ServiceConstant.MUSIC_PREV)) {
@@ -361,6 +364,18 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
      */
     public long getCurrentPosition() {
         return simpleExoPlayer.getCurrentPosition();
+    }
+
+    /**
+     * 再生中の曲の取得
+     * @return
+     */
+    public Song getSong() {
+        if (songs != null) {
+            return songs.get(position);
+        } else {
+            return null;
+        }
     }
 
     @Override

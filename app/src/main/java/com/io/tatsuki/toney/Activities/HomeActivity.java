@@ -21,6 +21,7 @@ import android.view.View;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ActivityEvent;
+import com.io.tatsuki.toney.Events.NotificationEvent;
 import com.io.tatsuki.toney.Events.SongEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
@@ -99,7 +100,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         musicService.pause();
-        updateControllerAndPlaying();
+        updateControllerAndPlaying(musicService.getPlayState());
     }
 
     /**
@@ -166,7 +167,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * BottomSheetに曲名、アーティスト名、アルバムアートを表示
      * @param song
      */
-    private void showSongAndArtist(Song song) {
+    private void showSongAndArtist(Song song, int currentProgress) {
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerSongText.setText(song.getSongName());
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerArtistText.setText(song.getSongArtist());
         ImageUtil.setDownloadImage(this, song.getSongArtPath(), binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageView);
@@ -176,8 +177,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (song.getSongArtPath() != null) {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverURL(String.valueOf(Uri.fromFile(new File(song.getSongArtPath()))));
         }
-        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setProgress(0);
-        updateControllerAndPlaying();
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setProgress(currentProgress);
     }
 
     /**
@@ -196,8 +196,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * Serviceから再生状態を取得し、ボタン等のViewを変える
      */
     // TODO:コントローラのクリックイベントにも以下メソッドを追加する
-    private void updateControllerAndPlaying() {
-        if (musicService.getPlayState()) {
+    private void updateControllerAndPlaying(boolean isPlaying) {
+        if (isPlaying) {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
             binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));
         } else {
@@ -235,7 +235,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Subscribe
     public void SongEvent(SongEvent event) {
-        showSongAndArtist(event.getSong());
+        showSongAndArtist(event.getSong(), 0);
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));
+    }
+
+    /**
+     * Notificationの再生・停止ボタンのイベントを受け取る
+     * @param event
+     */
+    @Subscribe
+    public void NotificationEvent(NotificationEvent event) {
+        updateControllerAndPlaying(event.isPlaying());
     }
 
     /**
@@ -260,8 +271,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             musicService = ((MusicService.MusicServiceBinder) iBinder).getService();
-            // Service接続時に画面を更新
-            updateControllerAndPlaying();
+            // 初回起動時にはsongsがセットされていないのでNull判定を行う
+            if (musicService.getSong() != null) {
+                showSongAndArtist(musicService.getSong(), calcSongDuration(musicService.getCurrentPosition()));
+                updateControllerAndPlaying(musicService.getPlayState());
+            }
         }
 
         @Override
