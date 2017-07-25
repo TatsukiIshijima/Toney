@@ -66,19 +66,21 @@
                 android:onClick="@{homeViewModel.onClickPrev}"/>
 
             <ImageButton
+                android:id="@+id/fragment_playing_repeat_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="50dp"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:background="@mipmap/ic_repeat_white"
+                android:background="@mipmap/ic_repeat_gray"
                 android:onClick="@{homeViewModel.onClickRepeat}"/>
 
             <ImageButton
+                android:id="@+id/fragment_playing_shuffle_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="50dp"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:background="@mipmap/ic_shuffle_white"
+                android:background="@mipmap/ic_shuffle_gray"
                 android:onClick="@{homeViewModel.onClickShuffle}"/>
 
             <ImageButton

@@ -39,6 +39,8 @@ import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
 import com.io.tatsuki.toney.Events.PlaySongEvent;
+import com.io.tatsuki.toney.Events.RepeatEvent;
+import com.io.tatsuki.toney.Events.ShuffleEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Utils.ImageUtil;
@@ -60,8 +62,8 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     public static final String SONGS_KEY = "SONGS";
     private final IBinder binder = new MusicServiceBinder();
     private boolean isActivityDestroy;
-    private boolean isRepeat = false;
-    private boolean isShuffle = false;
+    private boolean isRepeat;
+    private boolean isShuffle;
     private ArrayList<Song> songs;
     private int position;
     private SimpleExoPlayer simpleExoPlayer;
@@ -166,8 +168,20 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
                 next();
                 break;
             case ClickEvent.repeatCode:
+                if (getRepeat()) {
+                    setRepeat(false);
+                } else {
+                    setRepeat(true);
+                }
+                EventBus.getDefault().post(new RepeatEvent(isRepeat));
                 break;
             case ClickEvent.shuffleCode:
+                if (getShuffle()) {
+                    setShuffle(false);
+                } else {
+                    setShuffle(true);
+                }
+                EventBus.getDefault().post(new ShuffleEvent(isShuffle));
                 break;
             default:
                 break;
@@ -339,17 +353,35 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     }
 
     /**
+     * シャッフル設定状態の取得
+     * @return
+     */
+    public boolean getShuffle() {
+        return isShuffle;
+    }
+
+    /**
      * シャッフル設定
      */
-    public void setShuffle() {
+    public void setShuffle(boolean isShuffle) {
         Log.d(TAG, "setShuffle");
+        this.isShuffle = isShuffle;
+    }
+
+    /**
+     * リピート設定状態の取得
+     * @return
+     */
+    public boolean getRepeat() {
+        return isRepeat;
     }
 
     /**
      * リピート設定
      */
-    public void setRepeat() {
+    public void setRepeat(boolean isRepeat) {
         Log.d(TAG, "setRepeat");
+        this.isRepeat = isRepeat;
     }
 
     /**

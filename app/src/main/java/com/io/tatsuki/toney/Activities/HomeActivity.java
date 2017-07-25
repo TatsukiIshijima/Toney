@@ -15,13 +15,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
 import com.io.tatsuki.toney.Events.PlaySongEvent;
+import com.io.tatsuki.toney.Events.RepeatEvent;
+import com.io.tatsuki.toney.Events.ShuffleEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Services.MusicService;
@@ -34,7 +39,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     private ActivityHomeBinding binding;
@@ -90,6 +95,27 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binding.activityHomeDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         binding.activityHomeNavigation.setNavigationItemSelectedListener(selectedListener);
+
+        // NavigationDrawer内のShuffleボタン
+        SwitchCompat shuffleSwitch = (SwitchCompat) binding.activityHomeNavigation.getMenu().getItem(0).getActionView();
+        shuffleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "Shuffle : onCheckedChanged" + isChecked);
+                musicService.setShuffle(isChecked);
+                updateShuffle(isChecked);
+            }
+        });
+        // NavigationDrawerのRepeatボタン
+        SwitchCompat repeatSwitch = (SwitchCompat) binding.activityHomeNavigation.getMenu().getItem(1).getActionView();
+        repeatSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                Log.d(TAG, "Repeat : onCheckedChanged" + isChecked);
+                musicService.setRepeat(isChecked);
+                updateRepeat(isChecked);
+            }
+        });
     }
 
     /**
@@ -204,6 +230,35 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * シャッフルボタンの表示更新
+     */
+    private void updateShuffle(boolean isShuffle) {
+        Log.d(TAG, "updateShuffle : " + isShuffle);
+        SwitchCompat shuffleSwitch = (SwitchCompat) binding.activityHomeNavigation.getMenu().getItem(0).getActionView();
+        shuffleSwitch.setChecked(isShuffle);
+        if (isShuffle) {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingShuffleButton.setBackground(getDrawable(R.mipmap.ic_shuffle_white));
+        } else {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingShuffleButton.setBackground(getDrawable(R.mipmap.ic_shuffle_gray));
+        }
+    }
+
+    /**
+     * リピートボタンの表示更新
+     */
+    private void updateRepeat(boolean isRepeat) {
+        Log.d(TAG, "updateRepeat : " + isRepeat);
+        SwitchCompat repeatSwitch = (SwitchCompat)binding.activityHomeNavigation.getMenu().getItem(1).getActionView();
+        repeatSwitch.setChecked(isRepeat);
+        if (isRepeat) {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingRepeatButton.setBackground(getDrawable(R.mipmap.ic_repeat_white));
+        } else {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingRepeatButton.setBackground(getDrawable(R.mipmap.ic_repeat_gray));
+        }
+    }
+
+
     @Override
     protected void onResume() {
         // イベントの登録
@@ -229,6 +284,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * EventBusによる選択された曲の受け取り
+     * 画面更新のため
      * @param event
      */
     @Subscribe
@@ -240,6 +296,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 再生・停止ボタンのイベントを受け取る
+     * 画面更新のため
      * @param event
      */
     @Subscribe
@@ -247,6 +304,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         updateControllerAndPlaying(event.isPlaying());
     }
 
+    /**
+     * シャッフルボタンのクリックイベントを受け取る
+     * 画面更新のため
+     * @param event
+     */
+    @Subscribe
+    public void ShuffleEvent(ShuffleEvent event) {
+        updateShuffle(event.isShuffle());
+    }
+
+    /**
+     * リピートボタンのクリックイベントを受け取る
+     * 画面更新のため
+     */
+    @Subscribe
+    public void RepeatEvent(RepeatEvent event) {
+        updateRepeat(event.isRepeat());
+    }
 
     /**
      * Serviceと接続
@@ -274,6 +349,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             if (musicService.getSong() != null) {
                 showSongAndArtist(musicService.getSong(), calcSongDuration(musicService.getCurrentPosition()));
                 updateControllerAndPlaying(musicService.getPlayState());
+                updateShuffle(musicService.getShuffle());
+                updateRepeat(musicService.getRepeat());
             }
         }
 
