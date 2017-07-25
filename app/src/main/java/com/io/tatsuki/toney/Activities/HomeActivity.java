@@ -15,8 +15,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ActivityEvent;
@@ -34,7 +37,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     private ActivityHomeBinding binding;
@@ -90,6 +93,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binding.activityHomeDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         binding.activityHomeNavigation.setNavigationItemSelectedListener(selectedListener);
+
+        // NavigationDrawer内のShuffleボタン
+        SwitchCompat shuffleSwitch = (SwitchCompat) binding.activityHomeNavigation.getMenu().getItem(0).getActionView();
+        shuffleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                musicService.setShuffle();
+            }
+        });
+        // NavigationDrawerのRepeatボタン
+        SwitchCompat repeatSwitch = (SwitchCompat) binding.activityHomeNavigation.getMenu().getItem(1).getActionView();
+        repeatSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                musicService.setRepeat();
+            }
+        });
     }
 
     /**

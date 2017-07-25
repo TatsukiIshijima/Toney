@@ -339,10 +339,31 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     }
 
     /**
+     * シャッフル設定状態の取得
+     * @return
+     */
+    public boolean getShuffle() {
+        return isShuffle;
+    }
+
+    /**
      * シャッフル設定
      */
     public void setShuffle() {
         Log.d(TAG, "setShuffle");
+        if (isShuffle) {
+            isShuffle = false;
+        } else {
+            isShuffle = true;
+        }
+    }
+
+    /**
+     * リピート設定状態の取得
+     * @return
+     */
+    public boolean getRepeat() {
+        return isRepeat;
     }
 
     /**
@@ -350,6 +371,11 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
      */
     public void setRepeat() {
         Log.d(TAG, "setRepeat");
+        if (isRepeat) {
+            isRepeat = false;
+        } else {
+            isRepeat = true;
+        }
     }
 
     /**
