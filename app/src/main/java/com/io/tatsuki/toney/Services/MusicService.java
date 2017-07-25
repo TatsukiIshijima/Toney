@@ -39,6 +39,8 @@ import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
 import com.io.tatsuki.toney.Events.PlaySongEvent;
+import com.io.tatsuki.toney.Events.RepeatEvent;
+import com.io.tatsuki.toney.Events.ShuffleEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Utils.ImageUtil;
@@ -166,10 +168,20 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
                 next();
                 break;
             case ClickEvent.repeatCode:
-                // TODO:Activityに反映
+                if (getRepeat()) {
+                    setRepeat(false);
+                } else {
+                    setRepeat(true);
+                }
+                EventBus.getDefault().post(new RepeatEvent(isRepeat));
                 break;
             case ClickEvent.shuffleCode:
-                // TODO:Activityに反映
+                if (getShuffle()) {
+                    setShuffle(false);
+                } else {
+                    setShuffle(true);
+                }
+                EventBus.getDefault().post(new ShuffleEvent(isShuffle));
                 break;
             default:
                 break;

@@ -25,6 +25,8 @@ import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
 import com.io.tatsuki.toney.Events.PlaySongEvent;
+import com.io.tatsuki.toney.Events.RepeatEvent;
+import com.io.tatsuki.toney.Events.ShuffleEvent;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Services.MusicService;
@@ -282,6 +284,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * EventBusによる選択された曲の受け取り
+     * 画面更新のため
      * @param event
      */
     @Subscribe
@@ -293,6 +296,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 再生・停止ボタンのイベントを受け取る
+     * 画面更新のため
      * @param event
      */
     @Subscribe
@@ -300,6 +304,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         updateControllerAndPlaying(event.isPlaying());
     }
 
+    /**
+     * シャッフルボタンのクリックイベントを受け取る
+     * 画面更新のため
+     * @param event
+     */
+    @Subscribe
+    public void ShuffleEvent(ShuffleEvent event) {
+        updateShuffle(event.isShuffle());
+    }
+
+    /**
+     * リピートボタンのクリックイベントを受け取る
+     * 画面更新のため
+     */
+    @Subscribe
+    public void RepeatEvent(RepeatEvent event) {
+        updateRepeat(event.isRepeat());
+    }
 
     /**
      * Serviceと接続
