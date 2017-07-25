@@ -166,8 +166,10 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
                 next();
                 break;
             case ClickEvent.repeatCode:
+                // TODO:Activityに反映
                 break;
             case ClickEvent.shuffleCode:
+                // TODO:Activityに反映
                 break;
             default:
                 break;

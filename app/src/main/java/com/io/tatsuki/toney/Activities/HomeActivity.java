@@ -101,6 +101,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(TAG, "Shuffle : onCheckedChanged" + isChecked);
                 musicService.setShuffle(isChecked);
+                updateShuffle(isChecked);
             }
         });
         // NavigationDrawerのRepeatボタン
@@ -110,6 +111,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 Log.d(TAG, "Repeat : onCheckedChanged" + isChecked);
                 musicService.setRepeat(isChecked);
+                updateRepeat(isChecked);
             }
         });
     }
@@ -229,19 +231,29 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * シャッフルボタンの表示更新
      */
-    private void updateShuffle() {
-        Log.d(TAG, "updateShuffle : " + musicService.getShuffle());
+    private void updateShuffle(boolean isShuffle) {
+        Log.d(TAG, "updateShuffle : " + isShuffle);
         SwitchCompat shuffleSwitch = (SwitchCompat) binding.activityHomeNavigation.getMenu().getItem(0).getActionView();
-        shuffleSwitch.setChecked(musicService.getShuffle());
+        shuffleSwitch.setChecked(isShuffle);
+        if (isShuffle) {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingShuffleButton.setBackground(getDrawable(R.mipmap.ic_shuffle_white));
+        } else {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingShuffleButton.setBackground(getDrawable(R.mipmap.ic_shuffle_gray));
+        }
     }
 
     /**
      * リピートボタンの表示更新
      */
-    private void updateRepeat() {
-        Log.d(TAG, "updateRepeat : " + musicService.getRepeat());
+    private void updateRepeat(boolean isRepeat) {
+        Log.d(TAG, "updateRepeat : " + isRepeat);
         SwitchCompat repeatSwitch = (SwitchCompat)binding.activityHomeNavigation.getMenu().getItem(1).getActionView();
-        repeatSwitch.setChecked(musicService.getRepeat());
+        repeatSwitch.setChecked(isRepeat);
+        if (isRepeat) {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingRepeatButton.setBackground(getDrawable(R.mipmap.ic_repeat_white));
+        } else {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingRepeatButton.setBackground(getDrawable(R.mipmap.ic_repeat_gray));
+        }
     }
 
 
@@ -315,8 +327,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             if (musicService.getSong() != null) {
                 showSongAndArtist(musicService.getSong(), calcSongDuration(musicService.getCurrentPosition()));
                 updateControllerAndPlaying(musicService.getPlayState());
-                updateShuffle();
-                updateRepeat();
+                updateShuffle(musicService.getShuffle());
+                updateRepeat(musicService.getRepeat());
             }
         }
 
