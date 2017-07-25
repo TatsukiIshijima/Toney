@@ -99,15 +99,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         shuffleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                musicService.setShuffle();
+                Log.d(TAG, "Shuffle : onCheckedChanged" + isChecked);
+                musicService.setShuffle(isChecked);
             }
         });
         // NavigationDrawerのRepeatボタン
         SwitchCompat repeatSwitch = (SwitchCompat) binding.activityHomeNavigation.getMenu().getItem(1).getActionView();
         repeatSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                musicService.setRepeat();
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                Log.d(TAG, "Repeat : onCheckedChanged" + isChecked);
+                musicService.setRepeat(isChecked);
             }
         });
     }
@@ -224,6 +226,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * シャッフルボタンの表示更新
+     */
+    private void updateShuffle() {
+        Log.d(TAG, "updateShuffle : " + musicService.getShuffle());
+        SwitchCompat shuffleSwitch = (SwitchCompat) binding.activityHomeNavigation.getMenu().getItem(0).getActionView();
+        shuffleSwitch.setChecked(musicService.getShuffle());
+    }
+
+    /**
+     * リピートボタンの表示更新
+     */
+    private void updateRepeat() {
+        Log.d(TAG, "updateRepeat : " + musicService.getRepeat());
+        SwitchCompat repeatSwitch = (SwitchCompat)binding.activityHomeNavigation.getMenu().getItem(1).getActionView();
+        repeatSwitch.setChecked(musicService.getRepeat());
+    }
+
+
     @Override
     protected void onResume() {
         // イベントの登録
@@ -294,6 +315,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             if (musicService.getSong() != null) {
                 showSongAndArtist(musicService.getSong(), calcSongDuration(musicService.getCurrentPosition()));
                 updateControllerAndPlaying(musicService.getPlayState());
+                updateShuffle();
+                updateRepeat();
             }
         }
 

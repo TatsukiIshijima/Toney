@@ -60,8 +60,8 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     public static final String SONGS_KEY = "SONGS";
     private final IBinder binder = new MusicServiceBinder();
     private boolean isActivityDestroy;
-    private boolean isRepeat = false;
-    private boolean isShuffle = false;
+    private boolean isRepeat;
+    private boolean isShuffle;
     private ArrayList<Song> songs;
     private int position;
     private SimpleExoPlayer simpleExoPlayer;
@@ -349,13 +349,9 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     /**
      * シャッフル設定
      */
-    public void setShuffle() {
+    public void setShuffle(boolean isShuffle) {
         Log.d(TAG, "setShuffle");
-        if (isShuffle) {
-            isShuffle = false;
-        } else {
-            isShuffle = true;
-        }
+        this.isShuffle = isShuffle;
     }
 
     /**
@@ -369,13 +365,9 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     /**
      * リピート設定
      */
-    public void setRepeat() {
+    public void setRepeat(boolean isRepeat) {
         Log.d(TAG, "setRepeat");
-        if (isRepeat) {
-            isRepeat = false;
-        } else {
-            isRepeat = true;
-        }
+        this.isRepeat = isRepeat;
     }
 
     /**
