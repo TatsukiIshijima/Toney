@@ -35,6 +35,7 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.io.tatsuki.toney.Activities.HomeActivity;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
@@ -50,6 +51,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * 音楽再生のためのServiceクラス
@@ -67,6 +69,8 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     private ArrayList<Song> songs;
     private int position;
     private SimpleExoPlayer simpleExoPlayer;
+    private int repeatPosition;
+    private Random random;
 
     public class MusicServiceBinder extends Binder {
         public MusicService getService() {
@@ -81,6 +85,7 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
         EventBus.getDefault().register(this);
         // Playerの初期化
         initPlayer();
+        random = new Random();
         // TODO:初回起動処理
     }
 
@@ -222,10 +227,21 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
             views.setImageViewResource(R.id.notification_play_pause_button, R.drawable.notification_play);
         }
 
+        // NotificationからActivity起動
+        Intent notificationIntent = new Intent(this, HomeActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        // 第２引数に注意　デフォルトの数字ではActivityが起動しない可能性あり
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                                                                777,
+                                                                notificationIntent,
+                                                                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setCustomContentView(views);
         // TODO:アイコンを変更
         builder.setSmallIcon(android.R.drawable.sym_def_app_icon);
+        builder.setContentIntent(pendingIntent);
         Notification notification = builder.build();
         startForeground(ServiceConstant.NOTIFICATION_ID, notification);
     }
@@ -304,11 +320,26 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
      * 前の曲再生
      */
     public void prev() {
-        //Log.d(TAG, "prev");
-        if (position != 0) {
-            position -= 1;
-            play(position);
+        // リピート設定時
+        // リピート設定とシャッフル設定が同時の時はリピートを優先させる
+        if (getRepeat()) {
+            repeatPosition = position;
+            position = repeatPosition;
+        } else {
+            // シャッフル設定時
+            if (getShuffle()) {
+                int newPotion = position;
+                while (newPotion == position) {
+                    newPotion = random.nextInt(songs.size());
+                }
+                position = newPotion;
+            } else {
+                if (position != 0) {
+                    position -= 1;
+                }
+            }
         }
+        play(position);
     }
 
     /**
@@ -346,10 +377,26 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
      * 次の曲再生
      */
     public void next() {
-        if (position != songs.size() - 1) {
-            position += 1;
-            play(position);
+        // リピート設定時
+        // リピート設定とシャッフル設定が同時の時はリピートを優先させる
+        if (getRepeat()) {
+            repeatPosition = position;
+            position = repeatPosition;
+        } else {
+            // シャッフル設定時
+            if (getShuffle()) {
+                int newPotion = position;
+                while (newPotion == position) {
+                    newPotion = random.nextInt(songs.size());
+                }
+                position = newPotion;
+            } else {
+                if (position != songs.size() - 1) {
+                    position += 1;
+                }
+            }
         }
+        play(position);
     }
 
     /**
