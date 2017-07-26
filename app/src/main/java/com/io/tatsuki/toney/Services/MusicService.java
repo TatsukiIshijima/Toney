@@ -35,6 +35,7 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.io.tatsuki.toney.Activities.HomeActivity;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
@@ -226,10 +227,21 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
             views.setImageViewResource(R.id.notification_play_pause_button, R.drawable.notification_play);
         }
 
+        // NotificationからActivity起動
+        Intent notificationIntent = new Intent(this, HomeActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        // 第２引数に注意　デフォルトの数字ではActivityが起動しない可能性あり
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                                                                777,
+                                                                notificationIntent,
+                                                                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setCustomContentView(views);
         // TODO:アイコンを変更
         builder.setSmallIcon(android.R.drawable.sym_def_app_icon);
+        builder.setContentIntent(pendingIntent);
         Notification notification = builder.build();
         startForeground(ServiceConstant.NOTIFICATION_ID, notification);
     }
