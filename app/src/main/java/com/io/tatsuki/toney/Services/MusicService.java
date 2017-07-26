@@ -50,6 +50,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * 音楽再生のためのServiceクラス
@@ -67,6 +68,8 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
     private ArrayList<Song> songs;
     private int position;
     private SimpleExoPlayer simpleExoPlayer;
+    private int repeatPosition;
+    private Random random;
 
     public class MusicServiceBinder extends Binder {
         public MusicService getService() {
@@ -81,6 +84,7 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
         EventBus.getDefault().register(this);
         // Playerの初期化
         initPlayer();
+        random = new Random();
         // TODO:初回起動処理
     }
 
@@ -304,11 +308,26 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
      * 前の曲再生
      */
     public void prev() {
-        //Log.d(TAG, "prev");
-        if (position != 0) {
-            position -= 1;
-            play(position);
+        // リピート設定時
+        // リピート設定とシャッフル設定が同時の時はリピートを優先させる
+        if (getRepeat()) {
+            repeatPosition = position;
+            position = repeatPosition;
+        } else {
+            // シャッフル設定時
+            if (getShuffle()) {
+                int newPotion = position;
+                while (newPotion == position) {
+                    newPotion = random.nextInt(songs.size());
+                }
+                position = newPotion;
+            } else {
+                if (position != 0) {
+                    position -= 1;
+                }
+            }
         }
+        play(position);
     }
 
     /**
@@ -346,10 +365,26 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
      * 次の曲再生
      */
     public void next() {
-        if (position != songs.size() - 1) {
-            position += 1;
-            play(position);
+        // リピート設定時
+        // リピート設定とシャッフル設定が同時の時はリピートを優先させる
+        if (getRepeat()) {
+            repeatPosition = position;
+            position = repeatPosition;
+        } else {
+            // シャッフル設定時
+            if (getShuffle()) {
+                int newPotion = position;
+                while (newPotion == position) {
+                    newPotion = random.nextInt(songs.size());
+                }
+                position = newPotion;
+            } else {
+                if (position != songs.size() - 1) {
+                    position += 1;
+                }
+            }
         }
+        play(position);
     }
 
     /**
