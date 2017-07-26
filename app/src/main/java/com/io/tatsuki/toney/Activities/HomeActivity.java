@@ -124,8 +124,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onClick(View view) {
-        musicService.pause();
-        updateControllerAndPlaying(musicService.getPlayState());
+        if (musicService.getSong() != null) {
+            musicService.pause();
+            updateControllerAndPlaying(musicService.getPlayState());
+        }
     }
 
     /**
@@ -258,6 +260,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * 再生ボタン等のタップの可否変更
+     * @param enable
+     */
+    private void enablePlayerButton(boolean enable) {
+        // コントローラー画面
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPrev.setEnabled(enable);
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setEnabled(enable);
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonNext.setEnabled(enable);
+        // 再生画面
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setEnabled(enable);
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingPrevButton.setEnabled(enable);
+        binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingNextButton.setEnabled(enable);
+    }
 
     @Override
     protected void onResume() {
@@ -292,6 +308,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         showSongAndArtist(event.getSong(), 0);
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));
+        // 各ボタンを押せるよう設定
+        enablePlayerButton(true);
     }
 
     /**
@@ -351,6 +369,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 updateControllerAndPlaying(musicService.getPlayState());
                 updateShuffle(musicService.getShuffle());
                 updateRepeat(musicService.getRepeat());
+                // 各ボタンを押せるよう設定
+                enablePlayerButton(true);
+            } else {
+                // 各ボタンを押せないよう設定
+                enablePlayerButton(false);
             }
         }
 

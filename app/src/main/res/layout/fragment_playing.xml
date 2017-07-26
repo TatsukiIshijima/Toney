@@ -58,6 +58,7 @@
             android:layout_gravity="center">
 
             <ImageButton
+                android:id="@+id/fragment_playing_prev_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="50dp"
@@ -84,6 +85,7 @@
                 android:onClick="@{homeViewModel.onClickShuffle}"/>
 
             <ImageButton
+                android:id="@+id/fragment_playing_next_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:foreground="?android:attr/selectableItemBackground"

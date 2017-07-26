@@ -86,7 +86,6 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
         // Playerの初期化
         initPlayer();
         random = new Random();
-        // TODO:初回起動処理
     }
 
     @Nullable
