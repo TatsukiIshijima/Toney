@@ -158,9 +158,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
                         showPlayingScreen();
+                        // タップが下に伝搬してしまうのを防ぐ措置
+                        binding.activityHomeViewpager.setVisibility(View.INVISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         hidePlayingScreen();
+                        binding.activityHomeViewpager.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
