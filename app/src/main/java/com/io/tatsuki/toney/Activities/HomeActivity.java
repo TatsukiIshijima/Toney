@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -44,6 +45,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = HomeActivity.class.getSimpleName();
     private ActivityHomeBinding binding;
     private HomeViewModel homeViewModel;
+    private BottomSheetBehavior bottomSheetBehavior;
     private MusicService musicService;
     private boolean isBound;
 
@@ -64,13 +66,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         EventBus.getDefault().post(new ActivityEvent(false));
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.activityHomeBottomSheet.bottomSheetLayout);
         homeViewModel = new HomeViewModel();
         binding.setHomeViewModel(homeViewModel);
         binding.activityHomeBottomSheet.fragmentPlaying.setHomeViewModel(homeViewModel);
         binding.activityHomeBottomSheet.fragmentController.setHomeViewModel(homeViewModel);
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setOnClickListener(this);
         setViews(binding);
-        setBottomSheetBehavior(binding);
+        setBottomSheetBehavior();
     }
 
     /**
@@ -142,10 +145,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * BottomSheet挙動
-     * @param binding
      */
-    private void setBottomSheetBehavior(final ActivityHomeBinding binding) {
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(binding.activityHomeBottomSheet.bottomSheetLayout);
+    private void setBottomSheetBehavior() {
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -296,6 +297,27 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Activityが破棄されたことをServiceに通知
         EventBus.getDefault().post(new ActivityEvent(true));
         super.onDestroy();
+    }
+
+    /**
+     * バックキーが押された時
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // バックキーが押された場合
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // BottomSheetがフルの状態であれば戻す
+            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                return false;
+            }
+            return super.onKeyDown(keyCode, event);
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
     }
 
     /**
