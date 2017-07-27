@@ -72,6 +72,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binding.activityHomeBottomSheet.fragmentPlaying.setHomeViewModel(homeViewModel);
         binding.activityHomeBottomSheet.fragmentController.setHomeViewModel(homeViewModel);
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setOnClickListener(this);
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerLinearLayout.setOnClickListener(this);
         setViews(binding);
         setBottomSheetBehavior();
     }
@@ -122,14 +123,27 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * MusicPlayerView ClickListener
+     * 各Viewのクリックイベント
      * @param view
      */
     @Override
     public void onClick(View view) {
-        if (musicService.getSong() != null) {
-            musicService.pause();
-            updateControllerAndPlaying(musicService.getPlayState());
+        switch (view.getId()) {
+            // MusicPlayerViewのクリックイベント
+            case R.id.fragment_playing_mpv:
+                if (musicService.getSong() != null) {
+                    musicService.pause();
+                    updateControllerAndPlaying(musicService.getPlayState());
+                }
+                break;
+            // コントローラー画面のクリックイベント
+            case R.id.fragment_controller:
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+                break;
+            default:
+                break;
         }
     }
 
