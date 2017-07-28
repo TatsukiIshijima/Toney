@@ -238,8 +238,7 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
         builder.setCustomContentView(views);
-        // TODO:アイコンを変更
-        builder.setSmallIcon(android.R.drawable.sym_def_app_icon);
+        builder.setSmallIcon(R.mipmap.ic_stat_ic_tone);
         builder.setContentIntent(pendingIntent);
         Notification notification = builder.build();
         startForeground(ServiceConstant.NOTIFICATION_ID, notification);
