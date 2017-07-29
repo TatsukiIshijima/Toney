@@ -48,32 +48,26 @@
 
             </android.support.design.widget.AppBarLayout>
 
-            <RelativeLayout
+            <android.support.v4.view.ViewPager
+                android:id="@+id/activity_home_viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/activity_home_viewpager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <com.google.android.gms.ads.AdView
-                    android:id="@+id/activity_adView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="128dp"
-                    app:adSize="BANNER"
-                    app:adUnitId="ca-app-pub-4569086727145811/3092282379">
-                </com.google.android.gms.ads.AdView>
-            </RelativeLayout>
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
             <!-- BottomSheet Layout -->
             <include
                 android:id="@+id/activity_home_bottom_sheet"
                 layout="@layout/bottom_sheet_layout"/>
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/activity_adView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_marginBottom="72dp"
+                app:adSize="BANNER"
+                app:adUnitId="ca-app-pub-4569086727145811/3092282379">
+            </com.google.android.gms.ads.AdView>
 
         </android.support.design.widget.CoordinatorLayout>
 
