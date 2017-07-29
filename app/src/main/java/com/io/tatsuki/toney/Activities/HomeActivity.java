@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.google.android.gms.ads.AdRequest;
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
@@ -75,6 +76,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerLinearLayout.setOnClickListener(this);
         setViews(binding);
         setBottomSheetBehavior();
+        initAdMod();
     }
 
     /**
@@ -120,6 +122,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 updateRepeat(isChecked);
             }
         });
+    }
+
+    /**
+     * 広告表示の初期化
+     */
+    private void initAdMod() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        binding.activityAdView.loadAd(adRequest);
     }
 
     /**
