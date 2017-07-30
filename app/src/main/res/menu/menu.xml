@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/menu_shuffle"
-            android:icon="@mipmap/ic_shuffle_white"
+            android:icon="@drawable/ic_shuffle_white"
             android:title="シャッフル"
             android:textColor="@android:color/black"
             android:checkable="true"
@@ -12,7 +12,7 @@
 
         <item
             android:id="@+id/menu_equalizer"
-            android:icon="@mipmap/ic_repeat_white"
+            android:icon="@drawable/ic_repeat_white"
             android:title="リピート"
             android:textColor="@android:color/black"
             android:checkable="true"
