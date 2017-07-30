@@ -253,10 +253,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void updateControllerAndPlaying(boolean isPlaying) {
         if (isPlaying) {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
-            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));
+            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.drawable.ic_pause_white));
         } else {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
-            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_play_white));
+            binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.drawable.ic_play_white));
         }
     }
 
@@ -268,9 +268,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         SwitchCompat shuffleSwitch = (SwitchCompat) binding.activityHomeNavigation.getMenu().getItem(0).getActionView();
         shuffleSwitch.setChecked(isShuffle);
         if (isShuffle) {
-            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingShuffleButton.setBackground(getDrawable(R.mipmap.ic_shuffle_white));
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingShuffleButton.setBackground(getDrawable(R.drawable.ic_shuffle_white));
         } else {
-            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingShuffleButton.setBackground(getDrawable(R.mipmap.ic_shuffle_gray));
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingShuffleButton.setBackground(getDrawable(R.drawable.ic_shuffle_gray));
         }
     }
 
@@ -282,9 +282,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         SwitchCompat repeatSwitch = (SwitchCompat)binding.activityHomeNavigation.getMenu().getItem(1).getActionView();
         repeatSwitch.setChecked(isRepeat);
         if (isRepeat) {
-            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingRepeatButton.setBackground(getDrawable(R.mipmap.ic_repeat_white));
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingRepeatButton.setBackground(getDrawable(R.drawable.ic_repeat_white));
         } else {
-            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingRepeatButton.setBackground(getDrawable(R.mipmap.ic_repeat_gray));
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingRepeatButton.setBackground(getDrawable(R.drawable.ic_repeat_gray));
         }
     }
 
@@ -309,6 +309,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         EventBus.getDefault().register(this);
         doBindService();
         super.onResume();
+        if (binding.activityAdView != null) {
+            binding.activityAdView.resume();
+        }
     }
 
     @Override
@@ -317,6 +320,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         EventBus.getDefault().unregister(this);
         doUnbindService();
         super.onPause();
+        if (binding.activityAdView != null) {
+            binding.activityAdView.pause();
+        }
     }
 
     @Override
@@ -324,6 +330,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Activityが破棄されたことをServiceに通知
         EventBus.getDefault().post(new ActivityEvent(true));
         super.onDestroy();
+        if (binding.activityAdView != null) {
+            binding.activityAdView.destroy();
+        }
     }
 
     /**
@@ -356,7 +365,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void PlaySongEvent(PlaySongEvent event) {
         showSongAndArtist(event.getSong(), 0);
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
-        binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.mipmap.ic_pause_white));
+        binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.drawable.ic_pause_white));
         // 各ボタンを押せるよう設定
         enablePlayerButton(true);
     }
