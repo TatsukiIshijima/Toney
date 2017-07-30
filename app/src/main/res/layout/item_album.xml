@@ -11,30 +11,34 @@
             type="com.io.tatsuki.toney.ViewModels.AlbumViewModel"/>
     </data>
 
-    <android.support.v7.widget.CardView
-        android:layout_width="130dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:foreground="?android:attr/selectableItemBackground"
-        card_view:cardCornerRadius="4dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <android.support.v7.widget.CardView
+            android:layout_gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:foreground="?android:attr/selectableItemBackground"
+            card_view:cardCornerRadius="4dp">
 
-            <ImageView
-                android:id="@+id/item_album_image"
-                android:layout_width="130dp"
-                android:layout_height="130dp" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/item_album_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
@@ -51,6 +55,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
+                    android:layout_marginBottom="4dp"
                     android:text="@{albumViewModel.albumArtist}"
                     android:textSize="14sp"
                     android:maxLines="1"
@@ -58,6 +63,8 @@
 
             </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
 
 </layout>
