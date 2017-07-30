@@ -14,10 +14,13 @@ import com.io.tatsuki.toney.Adapters.AlbumAdapter;
 import com.io.tatsuki.toney.Events.AlbumEvent;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Repositories.LocalAccess;
+import com.io.tatsuki.toney.Views.GridSpacingItemDecoration;
 import com.io.tatsuki.toney.databinding.FragmentAlbumBinding;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import static com.io.tatsuki.toney.Views.GridSpacingItemDecoration.dpToPx;
 
 /**
  * アルバム Fragment
@@ -49,6 +52,7 @@ public class AlbumFragment extends Fragment {
 
         localAccess = new LocalAccess(getContext());
         binding.fragmentAlbumRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        binding.fragmentAlbumRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         AlbumAdapter albumAdapter = new AlbumAdapter(getContext(), localAccess.getAlbums(artistName));
         binding.fragmentAlbumRecyclerView.setAdapter(albumAdapter);
 
