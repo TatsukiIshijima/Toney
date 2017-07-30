@@ -309,6 +309,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         EventBus.getDefault().register(this);
         doBindService();
         super.onResume();
+        if (binding.activityAdView != null) {
+            binding.activityAdView.resume();
+        }
     }
 
     @Override
@@ -317,6 +320,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         EventBus.getDefault().unregister(this);
         doUnbindService();
         super.onPause();
+        if (binding.activityAdView != null) {
+            binding.activityAdView.pause();
+        }
     }
 
     @Override
@@ -324,6 +330,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Activityが破棄されたことをServiceに通知
         EventBus.getDefault().post(new ActivityEvent(true));
         super.onDestroy();
+        if (binding.activityAdView != null) {
+            binding.activityAdView.destroy();
+        }
     }
 
     /**
