@@ -10,21 +10,13 @@
             type="com.io.tatsuki.toney.ViewModels.SongViewModel"/>
     </data>
 
-    <LinearLayout
-        android:id="@+id/fragment_song_linear_layout"
-        android:orientation="vertical"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_song_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/fragment_song_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="72dp"
-            android:paddingTop="8dp">
-        </android.support.v7.widget.RecyclerView>
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="72dp"
+        android:paddingTop="8dp">
+    </android.support.v7.widget.RecyclerView>
 
 </layout>
 
