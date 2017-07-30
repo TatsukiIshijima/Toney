@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder>{
 
+    private static final String TAG = SongAdapter.class.getSimpleName();
     private Context context;
     private ItemSongBinding binding;
     private ArrayList<Song> songs;
@@ -48,7 +49,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
 
     @Override
     public void onBindViewHolder(SongViewHolder holder, int position) {
-        Song song = getItemAt(position);
+        // スクロール時に位置が変更されてしまうのを防止
+        // RecyclerViewの効果を発揮できないので代替案が必要かも
+        holder.setIsRecyclable(false);
+        Song song = getItemAt(holder.getLayoutPosition());
         // 曲データのセット
         holder.loadModel(song);
         // 画像のセット
