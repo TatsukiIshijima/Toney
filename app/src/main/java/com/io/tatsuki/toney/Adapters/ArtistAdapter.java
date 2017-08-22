@@ -47,12 +47,15 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
         //  アーティストデータのセット
         holder.loadModel(artist);
         // クリックイベントのセット
+        // TODO:アーティストIDをSongFragmentに渡す
+        /*
         binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 holder.onClickArtist(artist);
             }
         });
+        */
     }
 
     @Override
