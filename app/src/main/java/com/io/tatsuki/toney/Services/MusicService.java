@@ -39,7 +39,7 @@ import com.io.tatsuki.toney.Activities.HomeActivity;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.ClickEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
-import com.io.tatsuki.toney.Events.PlaySongEvent;
+import com.io.tatsuki.toney.Events.SelectSongEvent;
 import com.io.tatsuki.toney.Events.RepeatEvent;
 import com.io.tatsuki.toney.Events.ShuffleEvent;
 import com.io.tatsuki.toney.Models.Song;
@@ -353,7 +353,7 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
                          songs.get(position).getSongArtist(),
                          songs.get(position).getSongArtPath());
         // Activityに通知
-        EventBus.getDefault().post(new PlaySongEvent(songs.get(position)));
+        EventBus.getDefault().post(new SelectSongEvent(songs.get(position)));
     }
 
     /**

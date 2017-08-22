@@ -27,7 +27,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
-import com.io.tatsuki.toney.Events.PlaySongEvent;
+import com.io.tatsuki.toney.Events.SelectSongEvent;
 import com.io.tatsuki.toney.Events.RepeatEvent;
 import com.io.tatsuki.toney.Events.ShuffleEvent;
 import com.io.tatsuki.toney.Events.TransitionEvent;
@@ -368,7 +368,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * @param event
      */
     @Subscribe
-    public void PlaySongEvent(PlaySongEvent event) {
+    public void SelectSongEvent(SelectSongEvent event) {
         showSongAndArtist(event.getSong(), 0);
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.drawable.ic_pause_white));
@@ -412,11 +412,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Subscribe
     public void TransitionEvent(TransitionEvent event) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        SongFragment songFragment;
         switch (event.getFlag()) {
             case TransitionEvent.ALBUM_TO_SONG_FLAG:
+                songFragment = SongFragment.newInstance(localAccess.getSongs(event.getId(), null));
+                transaction.replace(R.id.root_album_frame_layout, songFragment);
                 break;
             case TransitionEvent.ARTIST_TO_SONG_FLAG:
-                SongFragment songFragment = SongFragment.newInstance(localAccess.getSongs(null, event.getId()));
+                songFragment = SongFragment.newInstance(localAccess.getSongs(null, event.getId()));
                 transaction.replace(R.id.root_artist_frame_layout, songFragment);
                 break;
         }

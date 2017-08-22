@@ -3,7 +3,6 @@ package com.io.tatsuki.toney.Fragments;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,14 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.io.tatsuki.toney.Adapters.AlbumAdapter;
-import com.io.tatsuki.toney.Events.AlbumEvent;
 import com.io.tatsuki.toney.Models.Album;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Views.GridSpacingItemDecoration;
 import com.io.tatsuki.toney.databinding.FragmentAlbumBinding;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -62,21 +57,12 @@ public class AlbumFragment extends Fragment {
 
     @Override
     public void onResume() {
-        // EventBusの登録
-        EventBus.getDefault().register(this);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        // EventBusの解除
-        EventBus.getDefault().unregister(this);
         super.onPause();
-    }
-
-    @Subscribe
-    public void onClickAlbum(AlbumEvent event) {
-        transitionSongFragment(event.getAlbum().getAlbumId());
     }
 
     /**
@@ -89,18 +75,5 @@ public class AlbumFragment extends Fragment {
         } else {
             albums = null;
         }
-    }
-
-    /**
-     * 曲リスト画面遷移
-     * @param albumId   アルバムID
-     */
-    private void transitionSongFragment(String albumId) {
-        Log.d(TAG, "transitionSongFragment : AlbumID : " +  albumId);
-        SongFragment songFragment = SongFragment.newInstance(albumId, null);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.root_album_frame_layout, songFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 }
