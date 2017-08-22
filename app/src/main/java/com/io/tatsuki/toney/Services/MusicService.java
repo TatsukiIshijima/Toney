@@ -219,6 +219,8 @@ public class MusicService extends Service implements ExoPlayer.EventListener{
         if (albumArtPath != null) {
             Bitmap bitmap = ImageUtil.decodeBitmap(albumArtPath, 100, 100);
             views.setImageViewBitmap(R.id.notification_album_image_view, bitmap);
+        } else {
+            views.setImageViewResource(R.id.notification_album_image_view, R.drawable.ic_default_album);
         }
         if (simpleExoPlayer.getPlayWhenReady()) {
             views.setImageViewResource(R.id.notification_play_pause_button, R.drawable.notification_pause);
