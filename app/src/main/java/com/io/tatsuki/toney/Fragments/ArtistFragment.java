@@ -78,7 +78,6 @@ public class ArtistFragment extends Fragment {
 
     /**
      * アーティストリストを受け取る
-     * @return アーティストリスト
      */
     private void getArtistList() {
         Bundle bundle = getArguments();
