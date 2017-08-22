@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
+import com.io.tatsuki.toney.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -24,7 +25,11 @@ public class ImageUtil {
      * @param imageView     View
      */
     public static void setDownloadImage(@NonNull Context context, String path, ImageView imageView) {
-        Picasso.with(context).load(new File(path)).fit().into(imageView);
+        if (path != null) {
+            Picasso.with(context).load(new File(path)).fit().into(imageView);
+        } else {
+            Picasso.with(context).load(R.drawable.ic_default_album).fit().into(imageView);
+        }
     }
 
     /**
