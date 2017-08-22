@@ -39,7 +39,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter implements ViewPager.
                 return RootArtistFragment.newInstance(localAccess.getArtists());
             case 1:
                 // 画面遷移時に重ならないようにRootFragmentを持たせる
-                return RootAlbumFragment.newInstance();
+                return RootAlbumFragment.newInstance(localAccess.getAlbums(null));
             case 2:
                 return SongFragment.newInstance();
         }

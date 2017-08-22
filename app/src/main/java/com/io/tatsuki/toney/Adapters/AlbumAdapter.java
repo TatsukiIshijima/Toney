@@ -50,12 +50,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         // 画像のセット
         ImageUtil.setDownloadImage(context, album.getAlbumArtPath(), binding.itemAlbumImage);
         // クリックイベントのセット
+        // TODO:アルバムIDをSongFragmentに渡す
+        /*
         binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 holder.onClickAlbum(album);
             }
         });
+        */
     }
 
     @Override
