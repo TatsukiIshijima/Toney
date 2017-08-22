@@ -3,7 +3,6 @@ package com.io.tatsuki.toney.Fragments;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,13 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.io.tatsuki.toney.Adapters.ArtistAdapter;
-import com.io.tatsuki.toney.Events.ArtistEvent;
 import com.io.tatsuki.toney.Models.Artist;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.databinding.FragmentArtistBinding;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -58,22 +53,12 @@ public class ArtistFragment extends Fragment {
 
     @Override
     public void onResume() {
-        // EventBusの登録
-        EventBus.getDefault().register(this);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        // EventBusの解除
-        EventBus.getDefault().unregister(this);
         super.onPause();
-    }
-
-    @Subscribe
-    public void onClickArtist(ArtistEvent event) {
-        Log.d(TAG, "onClickArtist : " + event.getArtist().getArtistId() + " ," + event.getArtist().getArtistName());
-        transitionSongFragment(event.getArtist().getArtistId());
     }
 
     /**
@@ -86,18 +71,5 @@ public class ArtistFragment extends Fragment {
         } else {
             artists = null;
         }
-    }
-
-    /**
-     * 曲リスト画面遷移
-     * @param artistId
-     */
-    private void transitionSongFragment(String artistId) {
-        Log.d(TAG, "transitionSongFragment : ArtistID : " +  artistId);
-        SongFragment songFragment = SongFragment.newInstance(null, artistId);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.root_artist_frame_layout, songFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 }

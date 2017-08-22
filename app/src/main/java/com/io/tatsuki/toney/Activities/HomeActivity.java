@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,8 +30,11 @@ import com.io.tatsuki.toney.Events.PlayPauseEvent;
 import com.io.tatsuki.toney.Events.PlaySongEvent;
 import com.io.tatsuki.toney.Events.RepeatEvent;
 import com.io.tatsuki.toney.Events.ShuffleEvent;
+import com.io.tatsuki.toney.Events.TransitionEvent;
+import com.io.tatsuki.toney.Fragments.SongFragment;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Repositories.LocalAccess;
 import com.io.tatsuki.toney.Services.MusicService;
 import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
@@ -49,6 +53,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private BottomSheetBehavior bottomSheetBehavior;
     private MusicService musicService;
     private boolean isBound;
+    private LocalAccess localAccess;
 
     /**
      * 画面遷移
@@ -77,6 +82,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setViews(binding);
         setBottomSheetBehavior();
         initAdMod();
+        localAccess = new LocalAccess(this);
     }
 
     /**
@@ -397,6 +403,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Subscribe
     public void RepeatEvent(RepeatEvent event) {
         updateRepeat(event.isRepeat());
+    }
+
+    /**
+     * 画面遷移のイベントを受け取る
+     * @param event
+     */
+    @Subscribe
+    public void TransitionEvent(TransitionEvent event) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        switch (event.getFlag()) {
+            case TransitionEvent.ALBUM_TO_SONG_FLAG:
+                break;
+            case TransitionEvent.ARTIST_TO_SONG_FLAG:
+                SongFragment songFragment = SongFragment.newInstance(localAccess.getSongs(null, event.getId()));
+                transaction.replace(R.id.root_artist_frame_layout, songFragment);
+                break;
+        }
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     /**
