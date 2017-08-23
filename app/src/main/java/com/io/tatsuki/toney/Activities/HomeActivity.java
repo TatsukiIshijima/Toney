@@ -258,9 +258,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void updateControllerAndPlaying(boolean isPlaying) {
         if (isPlaying) {
+            // バックグラウンドからの復帰でボタンが変更しない場合があるため
+            // 再生中であれば一度停止させてから再生させる処理にする
+            // 停止中はその逆
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
             binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.drawable.ic_pause_white));
         } else {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
             binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.drawable.ic_play_white));
         }
