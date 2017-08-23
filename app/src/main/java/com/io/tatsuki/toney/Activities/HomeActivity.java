@@ -324,6 +324,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         // イベントの解除
         EventBus.getDefault().unregister(this);
+        // 再生停止状態であればサービスを停止する
+        if (musicService != null) {
+            if (!musicService.getPlayState()) {
+                musicService.stopSelf();
+            }
+        }
         doUnbindService();
         super.onPause();
         if (binding.activityAdView != null) {
