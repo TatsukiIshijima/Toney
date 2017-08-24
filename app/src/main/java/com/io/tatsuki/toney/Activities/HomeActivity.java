@@ -238,7 +238,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (song.getSongArtPath() != null) {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverURL(String.valueOf(Uri.fromFile(new File(song.getSongArtPath()))));
         } else {
-            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverURL(ImageUtil.convertUrlFromDrawableResId(this, R.drawable.ic_default_album));
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverDrawable(R.drawable.ic_default_album);
         }
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setProgress(currentProgress);
     }
