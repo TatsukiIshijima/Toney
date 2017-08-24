@@ -1,10 +1,10 @@
 package com.io.tatsuki.toney.Utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.io.tatsuki.toney.R;
@@ -69,5 +69,24 @@ public class ImageUtil {
             for (int i = 2; i <= imgScale; i++) {inSampleSize = i;}
         }
         return inSampleSize;
+    }
+
+    /**
+     * DrawableResourceをURLに変換
+     * @param context
+     * @param drawableResId
+     * @return URL
+     */
+    public static String convertUrlFromDrawableResId(@NonNull Context context, int drawableResId) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ContentResolver.SCHEME_ANDROID_RESOURCE);
+        sb.append("://");
+        sb.append(context.getResources().getResourcePackageName(drawableResId));
+        sb.append("/");
+        sb.append(context.getResources().getResourceTypeName(drawableResId));
+        sb.append("/");
+        sb.append(context.getResources().getResourceEntryName(drawableResId));
+        return sb.toString();
+        // Uriに変換したい時は Uri.parse(sb.toString())
     }
 }
