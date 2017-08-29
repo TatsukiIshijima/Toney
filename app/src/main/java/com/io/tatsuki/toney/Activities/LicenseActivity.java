@@ -32,6 +32,6 @@ public class LicenseActivity extends AppCompatActivity {
 
         WebView webView = (WebView) findViewById(R.id.activity_license_webView);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl("https://www.google.com/");
+        webView.loadUrl("file:///android_asset/license.html");
     }
 }
