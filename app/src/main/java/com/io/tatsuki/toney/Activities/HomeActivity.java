@@ -169,7 +169,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private NavigationView.OnNavigationItemSelectedListener selectedListener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            return false;
+            switch (item.getItemId()) {
+                case R.id.menu_license:
+                    Log.d(TAG, "License");
+                    startActivity(LicenseActivity.startIntent(HomeActivity.this));
+                    break;
+                default:
+                    break;
+            }
+            return true;
         }
     };
 
