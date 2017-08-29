@@ -13,20 +13,22 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="false"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".Activities.SplashActivity"
-                  android:screenOrientation="portrait">
+        <activity
+            android:name=".Activities.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Activities.HomeActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
-        <service
-            android:name=".Services.MusicService" />
+        <service android:name=".Services.MusicService" />
 
+        <activity android:name=".Activities.LicenseActivity"/>
     </application>
 
 </manifest>

@@ -70,6 +70,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         // Activityが開始されたことをServiceに通知
         EventBus.getDefault().post(new ActivityEvent(false));
+        localAccess = new LocalAccess(this);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
         bottomSheetBehavior = BottomSheetBehavior.from(binding.activityHomeBottomSheet.bottomSheetLayout);
@@ -82,7 +83,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setViews(binding);
         setBottomSheetBehavior();
         initAdMod();
-        localAccess = new LocalAccess(this);
     }
 
     /**
@@ -91,9 +91,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void setViews(ActivityHomeBinding binding) {
         // ToolBar
         setSupportActionBar(binding.activityHomeToolbar);
+
+        if (localAccess.getSongs(null, null).size() == 0) {
+            binding.activityHomeViewpager.setVisibility(View.INVISIBLE);
+            binding.activityHomeMessageLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+            binding.activityHomeViewpager.setVisibility(View.VISIBLE);
+            binding.activityHomeMessageLinearLayout.setVisibility(View.INVISIBLE);
+        }
         // ViewPager
         FragmentManager fragmentManager = getSupportFragmentManager();
-        HomePagerAdapter homePagerAdapter = new HomePagerAdapter(this, fragmentManager);
+        HomePagerAdapter homePagerAdapter = new HomePagerAdapter(this,
+                                                                 fragmentManager,
+                                                                 localAccess.getArtists(),
+                                                                 localAccess.getAlbums(null),
+                                                                 localAccess.getSongs(null, null));
         binding.activityHomeViewpager.setAdapter(homePagerAdapter);
         binding.activityHomeViewpager.addOnPageChangeListener(homePagerAdapter);
         // Tab
@@ -169,7 +181,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private NavigationView.OnNavigationItemSelectedListener selectedListener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            return false;
+            switch (item.getItemId()) {
+                case R.id.menu_license:
+                    Log.d(TAG, "License");
+                    startActivity(LicenseActivity.startIntent(HomeActivity.this));
+                    break;
+                default:
+                    break;
+            }
+            return true;
         }
     };
 
