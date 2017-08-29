@@ -48,11 +48,41 @@
 
             </android.support.design.widget.AppBarLayout>
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/activity_home_viewpager"
+            <FrameLayout
+                android:id="@+id/activity_home_frame_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/activity_home_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:id="@+id/activity_home_message_linear_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/ic_no_songs"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="楽曲が見つかりません。"
+                        android:textSize="16dp"
+                        android:layout_gravity="center_horizontal"/>
+                </LinearLayout>
+
+
+            </FrameLayout>
 
             <!-- BottomSheet Layout -->
             <include
