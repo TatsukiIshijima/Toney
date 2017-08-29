@@ -6,11 +6,11 @@ import com.io.tatsuki.toney.Models.Song;
  * 曲を渡すためのEventクラス
  */
 
-public class PlaySongEvent {
+public class SelectSongEvent {
 
     private Song song;
 
-    public PlaySongEvent(Song song) {
+    public SelectSongEvent(Song song) {
         this.song = song;
     }
 

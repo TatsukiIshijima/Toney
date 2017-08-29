@@ -7,10 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.io.tatsuki.toney.Events.TransitionEvent;
 import com.io.tatsuki.toney.Models.Artist;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.ViewModels.ArtistViewModel;
 import com.io.tatsuki.toney.databinding.ItemArtistBinding;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -47,10 +50,10 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
         //  アーティストデータのセット
         holder.loadModel(artist);
         // クリックイベントのセット
-        binding.getRoot().setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onClickArtist(artist);
+                EventBus.getDefault().post(new TransitionEvent(TransitionEvent.ARTIST_TO_SONG_FLAG, artist.getArtistId()));
             }
         });
     }
@@ -72,7 +75,6 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
 
         private ArtistViewModel artistViewModel;
 
-
         public ArtistViewHolder(View itemView, ArtistViewModel artistViewModel) {
             super(itemView);
             this.artistViewModel = artistViewModel;
@@ -84,14 +86,6 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
          */
         public void loadModel(Artist artist) {
             artistViewModel.setArtist(artist);
-        }
-
-        /**
-         * クリックイベント
-         * @param artist
-         */
-        public void onClickArtist(Artist artist) {
-            artistViewModel.onClickArtist(artist);
         }
     }
 }

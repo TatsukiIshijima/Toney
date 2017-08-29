@@ -1,12 +1,13 @@
 package com.io.tatsuki.toney.Utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
+import com.io.tatsuki.toney.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -24,7 +25,11 @@ public class ImageUtil {
      * @param imageView     View
      */
     public static void setDownloadImage(@NonNull Context context, String path, ImageView imageView) {
-        Picasso.with(context).load(new File(path)).fit().into(imageView);
+        if (path != null) {
+            Picasso.with(context).load(new File(path)).fit().into(imageView);
+        } else {
+            Picasso.with(context).load(R.drawable.ic_default_album).fit().into(imageView);
+        }
     }
 
     /**
@@ -64,5 +69,24 @@ public class ImageUtil {
             for (int i = 2; i <= imgScale; i++) {inSampleSize = i;}
         }
         return inSampleSize;
+    }
+
+    /**
+     * DrawableResourceをURLに変換
+     * @param context
+     * @param drawableResId
+     * @return URL
+     */
+    public static String convertUrlFromDrawableResId(@NonNull Context context, int drawableResId) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ContentResolver.SCHEME_ANDROID_RESOURCE);
+        sb.append("://");
+        sb.append(context.getResources().getResourcePackageName(drawableResId));
+        sb.append("/");
+        sb.append(context.getResources().getResourceTypeName(drawableResId));
+        sb.append("/");
+        sb.append(context.getResources().getResourceEntryName(drawableResId));
+        return sb.toString();
+        // Uriに変換したい時は Uri.parse(sb.toString())
     }
 }

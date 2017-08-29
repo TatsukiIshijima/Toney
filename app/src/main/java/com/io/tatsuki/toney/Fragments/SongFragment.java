@@ -10,10 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.io.tatsuki.toney.Adapters.SongAdapter;
+import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Repositories.LocalAccess;
 import com.io.tatsuki.toney.ViewModels.SongViewModel;
 import com.io.tatsuki.toney.databinding.FragmentSongBinding;
+
+import java.util.ArrayList;
 
 /**
  * 曲 Framgment
@@ -22,14 +25,15 @@ import com.io.tatsuki.toney.databinding.FragmentSongBinding;
 public class SongFragment extends Fragment {
 
     private static final String TAG = SongFragment.class.getSimpleName();
-
-    private LocalAccess localAccess;
+    private static final String SONG_LIST_KEY = "SONG_LIST_KEY";
     private String albumId;
     private String artistId;
+    private ArrayList<Song> songs;
 
-    public static SongFragment newInstance() {
+    public static SongFragment newInstance(ArrayList<Song> songs) {
         SongFragment songFragment = new SongFragment();
         Bundle args = new Bundle();
+        args.putSerializable(SONG_LIST_KEY, songs);
         songFragment.setArguments(args);
         return songFragment;
     }
@@ -42,8 +46,6 @@ public class SongFragment extends Fragment {
         songFragment.setArguments(args);
         return songFragment;
     }
-
-    public SongFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -59,12 +61,23 @@ public class SongFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstance) {
         FragmentSongBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_song, viewGroup, false);
         View songView = binding.getRoot();
-
-        localAccess = new LocalAccess(getContext());
+        getSongList();
         binding.fragmentSongRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        SongAdapter songAdapter = new SongAdapter(getContext(), localAccess.getSongs(albumId, artistId));
+        SongAdapter songAdapter = new SongAdapter(getContext(), songs);
         binding.fragmentSongRecyclerView.setAdapter(songAdapter);
 
         return songView;
+    }
+
+    /**
+     * 曲リストを受け取る
+     */
+    private void getSongList() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            songs = (ArrayList<Song>) bundle.getSerializable(SONG_LIST_KEY);
+        } else {
+            songs = null;
+        }
     }
 }

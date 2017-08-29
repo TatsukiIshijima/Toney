@@ -50,7 +50,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     @Override
     public void onBindViewHolder(SongViewHolder holder, int position) {
         // スクロール時に位置が変更されてしまうのを防止
-        // RecyclerViewの効果を発揮できないので代替案が必要かも
+        // TODO:RecyclerViewの効果を発揮できないので代替案が必要かも
         holder.setIsRecyclable(false);
         Song song = getItemAt(holder.getLayoutPosition());
         // 曲データのセット
@@ -58,7 +58,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         // 画像のセット
         ImageUtil.setDownloadImage(context, song.getSongArtPath(), binding.itemSongImage);
         // クリックイベントのセット
-        binding.getRoot().setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Service開始

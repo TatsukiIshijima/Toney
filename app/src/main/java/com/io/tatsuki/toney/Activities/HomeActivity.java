@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,11 +27,14 @@ import com.google.android.gms.ads.AdRequest;
 import com.io.tatsuki.toney.Adapters.HomePagerAdapter;
 import com.io.tatsuki.toney.Events.ActivityEvent;
 import com.io.tatsuki.toney.Events.PlayPauseEvent;
-import com.io.tatsuki.toney.Events.PlaySongEvent;
+import com.io.tatsuki.toney.Events.SelectSongEvent;
 import com.io.tatsuki.toney.Events.RepeatEvent;
 import com.io.tatsuki.toney.Events.ShuffleEvent;
+import com.io.tatsuki.toney.Events.TransitionEvent;
+import com.io.tatsuki.toney.Fragments.SongFragment;
 import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Repositories.LocalAccess;
 import com.io.tatsuki.toney.Services.MusicService;
 import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.ViewModels.HomeViewModel;
@@ -49,6 +53,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private BottomSheetBehavior bottomSheetBehavior;
     private MusicService musicService;
     private boolean isBound;
+    private LocalAccess localAccess;
 
     /**
      * 画面遷移
@@ -77,6 +82,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setViews(binding);
         setBottomSheetBehavior();
         initAdMod();
+        localAccess = new LocalAccess(this);
     }
 
     /**
@@ -231,6 +237,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setMax(calcSongDuration(song.getDuration()));
         if (song.getSongArtPath() != null) {
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverURL(String.valueOf(Uri.fromFile(new File(song.getSongArtPath()))));
+        } else {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setCoverDrawable(R.drawable.ic_default_album);
         }
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.setProgress(currentProgress);
     }
@@ -252,9 +260,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void updateControllerAndPlaying(boolean isPlaying) {
         if (isPlaying) {
+            // バックグラウンドからの復帰でボタンが変更しない場合があるため
+            // 再生中であれば一度停止させてから再生させる処理にする
+            // 停止中はその逆
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
             binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.drawable.ic_pause_white));
         } else {
+            binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
             binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.stop();
             binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.drawable.ic_play_white));
         }
@@ -318,6 +331,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         // イベントの解除
         EventBus.getDefault().unregister(this);
+        // 再生停止状態であればサービスを停止する
+        if (musicService != null) {
+            if (!musicService.getPlayState()) {
+                musicService.stopSelf();
+            }
+        }
         doUnbindService();
         super.onPause();
         if (binding.activityAdView != null) {
@@ -362,7 +381,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * @param event
      */
     @Subscribe
-    public void PlaySongEvent(PlaySongEvent event) {
+    public void SelectSongEvent(SelectSongEvent event) {
         showSongAndArtist(event.getSong(), 0);
         binding.activityHomeBottomSheet.fragmentPlaying.fragmentPlayingMpv.start();
         binding.activityHomeBottomSheet.fragmentController.fragmentControllerImageButtonPlay.setBackground(getDrawable(R.drawable.ic_pause_white));
@@ -397,6 +416,28 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Subscribe
     public void RepeatEvent(RepeatEvent event) {
         updateRepeat(event.isRepeat());
+    }
+
+    /**
+     * 画面遷移のイベントを受け取る
+     * @param event
+     */
+    @Subscribe
+    public void TransitionEvent(TransitionEvent event) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        SongFragment songFragment;
+        switch (event.getFlag()) {
+            case TransitionEvent.ALBUM_TO_SONG_FLAG:
+                songFragment = SongFragment.newInstance(localAccess.getSongs(event.getId(), null));
+                transaction.replace(R.id.root_album_frame_layout, songFragment);
+                break;
+            case TransitionEvent.ARTIST_TO_SONG_FLAG:
+                songFragment = SongFragment.newInstance(localAccess.getSongs(null, event.getId()));
+                transaction.replace(R.id.root_artist_frame_layout, songFragment);
+                break;
+        }
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     /**

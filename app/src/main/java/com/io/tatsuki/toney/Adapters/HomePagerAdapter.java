@@ -11,6 +11,7 @@ import com.io.tatsuki.toney.Fragments.RootAlbumFragment;
 import com.io.tatsuki.toney.Fragments.RootArtistFragment;
 import com.io.tatsuki.toney.Fragments.SongFragment;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Repositories.LocalAccess;
 
 /**
  * ページ切り替え用のPagerAdapter
@@ -21,11 +22,13 @@ public class HomePagerAdapter extends FragmentPagerAdapter implements ViewPager.
     private static final String TAG = HomePagerAdapter.class.getSimpleName();
     private Context context;
     private FragmentManager fm;
+    private LocalAccess localAccess;
 
     public HomePagerAdapter(Context context, FragmentManager fragmentManager) {
         super(fragmentManager);
         this.context = context;
         this.fm = fragmentManager;
+        localAccess = new LocalAccess(context);
     }
 
     @Override
@@ -33,12 +36,12 @@ public class HomePagerAdapter extends FragmentPagerAdapter implements ViewPager.
         switch (position) {
             case 0:
                 // 画面遷移時に重ならないようにRootFragmentを持たせる
-                return RootArtistFragment.newInstance();
+                return RootArtistFragment.newInstance(localAccess.getArtists());
             case 1:
                 // 画面遷移時に重ならないようにRootFragmentを持たせる
-                return RootAlbumFragment.newInstance();
+                return RootAlbumFragment.newInstance(localAccess.getAlbums(null));
             case 2:
-                return SongFragment.newInstance();
+                return SongFragment.newInstance(localAccess.getSongs(null, null));
         }
         return null;
     }
