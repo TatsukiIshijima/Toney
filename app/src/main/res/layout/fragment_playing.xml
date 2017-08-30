@@ -76,7 +76,7 @@
                 app:buttonColor="@color/colorAccent"
                 app:progressLoadedColor="@color/colorAccent"
                 app:progressEmptyColor="#20FFFFFF"
-                app:cover="@drawable/mycover"/>
+                app:cover="@drawable/ic_default_album"/>
 
         </LinearLayout>
 

@@ -62,7 +62,7 @@ public class LocalAccess {
                                                      new String[] {albumId},
                                                      null);
 
-            } else if (artistId != null && albumId == null) {
+            } else if (albumId == null && artistId != null) {
                 // 同一アーティストの曲を取得するCursor
                 cursor = contentProviderClient.query(mediaUri,
                                                      null,
@@ -133,7 +133,7 @@ public class LocalAccess {
                 album.setAlbumName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)));
                 album.setAlbumArtPath(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART)));
                 album.setAlbumArtist(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST)));
-                album.setSongs(getSongs(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums._ID)), null));
+                //album.setSongs(getSongs(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums._ID)), null));
                 albums.add(album);
                 Log.d(TAG, "Album:" + album.getAlbumName());
             }
@@ -171,8 +171,8 @@ public class LocalAccess {
                 artist.setArtistKey(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST_KEY)));
                 artist.setArtistName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST)));
                 artist.setAlbumNum(cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_ALBUMS)));
-                artist.setAlbums(getAlbums(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST))));
-                artist.setSongs(getSongs(null, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists._ID))));
+                //artist.setAlbums(getAlbums(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST))));
+                //artist.setSongs(getSongs(null, cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists._ID))));
                 artists.add(artist);
                 Log.d(TAG, "Artist:" + artist.getArtistName());
             }

@@ -7,11 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.io.tatsuki.toney.Events.TransitionEvent;
 import com.io.tatsuki.toney.Models.Album;
 import com.io.tatsuki.toney.R;
 import com.io.tatsuki.toney.Utils.ImageUtil;
 import com.io.tatsuki.toney.ViewModels.AlbumViewModel;
 import com.io.tatsuki.toney.databinding.ItemAlbumBinding;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -50,10 +53,10 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         // 画像のセット
         ImageUtil.setDownloadImage(context, album.getAlbumArtPath(), binding.itemAlbumImage);
         // クリックイベントのセット
-        binding.getRoot().setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.onClickAlbum(album);
+                EventBus.getDefault().post(new TransitionEvent(TransitionEvent.ALBUM_TO_SONG_FLAG, album.getAlbumId()));
             }
         });
     }
@@ -89,14 +92,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
          */
         public void loadModel(Album album) {
             albumViewModel.setAlbum(album);
-        }
-
-        /**
-         * クリックイベント
-         * @param album
-         */
-        public void onClickAlbum(Album album) {
-            albumViewModel.onClickAlbum(album);
         }
     }
 }

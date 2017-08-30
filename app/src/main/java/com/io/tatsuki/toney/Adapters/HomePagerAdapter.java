@@ -10,7 +10,13 @@ import android.util.Log;
 import com.io.tatsuki.toney.Fragments.RootAlbumFragment;
 import com.io.tatsuki.toney.Fragments.RootArtistFragment;
 import com.io.tatsuki.toney.Fragments.SongFragment;
+import com.io.tatsuki.toney.Models.Album;
+import com.io.tatsuki.toney.Models.Artist;
+import com.io.tatsuki.toney.Models.Song;
 import com.io.tatsuki.toney.R;
+import com.io.tatsuki.toney.Repositories.LocalAccess;
+
+import java.util.ArrayList;
 
 /**
  * ページ切り替え用のPagerAdapter
@@ -21,11 +27,21 @@ public class HomePagerAdapter extends FragmentPagerAdapter implements ViewPager.
     private static final String TAG = HomePagerAdapter.class.getSimpleName();
     private Context context;
     private FragmentManager fm;
+    private ArrayList<Artist> artists;
+    private ArrayList<Album> albums;
+    private ArrayList<Song> songs;
 
-    public HomePagerAdapter(Context context, FragmentManager fragmentManager) {
+    public HomePagerAdapter(Context context,
+                            FragmentManager fragmentManager,
+                            ArrayList<Artist> artists,
+                            ArrayList<Album> albums,
+                            ArrayList<Song> songs) {
         super(fragmentManager);
         this.context = context;
         this.fm = fragmentManager;
+        this.artists = artists;
+        this.albums = albums;
+        this.songs = songs;
     }
 
     @Override
@@ -33,12 +49,12 @@ public class HomePagerAdapter extends FragmentPagerAdapter implements ViewPager.
         switch (position) {
             case 0:
                 // 画面遷移時に重ならないようにRootFragmentを持たせる
-                return RootArtistFragment.newInstance();
+                return RootArtistFragment.newInstance(artists);
             case 1:
                 // 画面遷移時に重ならないようにRootFragmentを持たせる
-                return RootAlbumFragment.newInstance();
+                return RootAlbumFragment.newInstance(albums);
             case 2:
-                return SongFragment.newInstance();
+                return SongFragment.newInstance(songs);
         }
         return null;
     }

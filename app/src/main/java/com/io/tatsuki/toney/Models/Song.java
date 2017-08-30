@@ -4,65 +4,36 @@ import android.net.Uri;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Song Model
  */
 
 public class Song implements Serializable {
 
+    @Getter
+    @Setter
     private String songId;
+
+    @Getter
+    @Setter
     private String songName;
+
+    @Getter
+    @Setter
     private String songPath;
+
+    @Getter
+    @Setter
     private String songArtPath;
+
+    @Getter
+    @Setter
     private String songArtist;
+
+    @Getter
+    @Setter
     private long duration;
-
-    public String getSongId() {
-        return songId;
-    }
-
-    public void setSongId(String songId) {
-        this.songId = songId;
-    }
-
-    public String getSongName() {
-        return songName;
-    }
-
-    public void setSongName(String songName) {
-        this.songName = songName;
-    }
-
-    // SerializeなのでStringでget, setしておく
-    public String getSongPath() {
-        return songPath;
-    }
-
-    public void setSongPath(String songPath) {
-        this.songPath = songPath;
-    }
-
-    public String getSongArtPath() {
-        return songArtPath;
-    }
-
-    public void setSongArtPath(String songArtPath) {
-        this.songArtPath = songArtPath;
-    }
-
-    public String getSongArtist() {
-        return songArtist;
-    }
-
-    public void setSongArtist(String songArtist) {
-        this.songArtist = songArtist;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
 }
